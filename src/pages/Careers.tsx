@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import GradientOrbs from "@/components/GradientOrbs";
 import { whyUsReasons, hiringSteps } from "@/lib/data";
-import { jobsApi, pagesApi } from "@/lib/api";
+import { jobsApi, pagesApi, settingsApi } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { ArrowRight, Briefcase, TrendingUp, BookOpen, Coffee, DollarSign, RefreshCw, Heart, Send, MapPin, Loader2 } from "lucide-react";
@@ -16,7 +16,9 @@ const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transiti
 const Careers = () => {
   const { data: jobs = [], isLoading } = useQuery({ queryKey: ["jobs"], queryFn: jobsApi.getAll });
   const { data: whyUsPage } = useQuery({ queryKey: ["page", "why-us"], queryFn: () => pagesApi.get("why-us"), retry: false });
+  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: settingsApi.get, retry: false });
   const openJobs = jobs.filter((job) => job.status?.toLowerCase() === "open");
+  const email = settings?.contact_email || "info@citizeninfotechnepal.com";
 
   return (
     <Layout>
@@ -85,7 +87,7 @@ const Careers = () => {
             ) : (
               <p className="mt-4 text-sm text-muted-foreground">
                 No openings right now — but we're always interested in meeting great people. Drop us a line at{" "}
-                <a href="mailto:info@citizeninfotechnepal.com" className="text-primary hover:underline">info@citizeninfotechnepal.com</a>.
+                <a href={`mailto:${email}`} className="text-primary hover:underline">{email}</a>.
               </p>
             )}
           </div>

@@ -11,10 +11,10 @@ interface ThemeContextType {
   design: Design;
   saving: boolean;
   error: string | null;
-  setPalette: (p: ColorPalette) => void;
-  setMode: (m: Mode) => void;
-  setDesign: (d: Design) => void;
-  toggleMode: () => void;
+  setPalette: (p: ColorPalette, persist?: boolean) => void;
+  setMode: (m: Mode, persist?: boolean) => void;
+  setDesign: (d: Design, persist?: boolean) => void;
+  toggleMode: (persist?: boolean) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
@@ -73,25 +73,25 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const setPalette = (p: ColorPalette) => {
+  const setPalette = (p: ColorPalette, persist = false) => {
     setPaletteState(p);
     localStorage.setItem("ci-palette", p);
-    persistRemote({ palette: p });
+    if (persist) persistRemote({ palette: p });
   };
 
-  const setMode = (m: Mode) => {
+  const setMode = (m: Mode, persist = false) => {
     setModeState(m);
     localStorage.setItem("ci-mode", m);
-    persistRemote({ mode: m });
+    if (persist) persistRemote({ mode: m });
   };
 
-  const setDesign = (d: Design) => {
+  const setDesign = (d: Design, persist = false) => {
     setDesignState(d);
     localStorage.setItem("ci-design", d);
-    persistRemote({ design: d });
+    if (persist) persistRemote({ design: d });
   };
 
-  const toggleMode = () => setMode(mode === "dark" ? "light" : "dark");
+  const toggleMode = (persist = false) => setMode(mode === "dark" ? "light" : "dark", persist);
 
   useEffect(() => {
     const root = document.documentElement;

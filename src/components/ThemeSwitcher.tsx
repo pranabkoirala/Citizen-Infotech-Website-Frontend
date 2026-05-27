@@ -3,7 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import { useTheme, PALETTES, DESIGNS } from "@/contexts/ThemeContext";
 
-const ThemeSwitcher = () => {
+type ThemeSwitcherProps = {
+  allowThemeControls?: boolean;
+  persistChanges?: boolean;
+};
+
+const ThemeSwitcher = ({ allowThemeControls = false, persistChanges = false }: ThemeSwitcherProps) => {
   const { palette, mode, design, setPalette, setDesign, toggleMode } = useTheme();
   const [open, setOpen] = useState<null | "palette" | "design">(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -20,7 +25,7 @@ const ThemeSwitcher = () => {
     <div ref={ref} className="relative flex items-center gap-1">
       {/* Mode toggle */}
       <button
-        onClick={toggleMode}
+        onClick={() => toggleMode(persistChanges)}
         className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
         aria-label="Toggle light/dark mode"
       >
@@ -37,26 +42,30 @@ const ThemeSwitcher = () => {
         </AnimatePresence>
       </button>
 
-      {/* Design picker */}
-      <button
-        onClick={() => setOpen(open === "design" ? null : "design")}
-        className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-        aria-label="Choose design style"
-      >
-        <Layers size={16} />
-      </button>
+      {allowThemeControls && (
+        <>
+          {/* Design picker */}
+          <button
+            onClick={() => setOpen(open === "design" ? null : "design")}
+            className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            aria-label="Choose design style"
+          >
+            <Layers size={16} />
+          </button>
 
-      {/* Palette picker */}
-      <button
-        onClick={() => setOpen(open === "palette" ? null : "palette")}
-        className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-        aria-label="Choose color palette"
-      >
-        <Palette size={16} />
-      </button>
+          {/* Palette picker */}
+          <button
+            onClick={() => setOpen(open === "palette" ? null : "palette")}
+            className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            aria-label="Choose color palette"
+          >
+            <Palette size={16} />
+          </button>
+        </>
+      )}
 
       <AnimatePresence>
-        {open === "palette" && (
+        {allowThemeControls && open === "palette" && (
           <motion.div
             initial={{ opacity: 0, y: 8, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -68,7 +77,7 @@ const ThemeSwitcher = () => {
             {PALETTES.map((p) => (
               <button
                 key={p.id}
-                onClick={() => { setPalette(p.id); setOpen(null); }}
+                onClick={() => { setPalette(p.id, persistChanges); setOpen(null); }}
                 className={`flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-secondary ${
                   palette === p.id ? "text-foreground font-medium" : "text-muted-foreground"
                 }`}
@@ -81,7 +90,7 @@ const ThemeSwitcher = () => {
           </motion.div>
         )}
 
-        {open === "design" && (
+        {allowThemeControls && open === "design" && (
           <motion.div
             initial={{ opacity: 0, y: 8, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -93,7 +102,7 @@ const ThemeSwitcher = () => {
             {DESIGNS.map((d) => (
               <button
                 key={d.id}
-                onClick={() => { setDesign(d.id); setOpen(null); }}
+                onClick={() => { setDesign(d.id, persistChanges); setOpen(null); }}
                 className={`flex w-full flex-col items-start gap-0.5 rounded-md px-2 py-2 text-left transition-colors hover:bg-secondary ${
                   design === d.id ? "bg-secondary/50" : ""
                 }`}

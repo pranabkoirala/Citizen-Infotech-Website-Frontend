@@ -135,6 +135,11 @@ export interface SiteSettings {
   work_title?: string;
   cta_title?: string;
   cta_description?: string;
+  testimonials?: { name: string; role: string; text: string }[];
+  trusted_companies?: { name: string; logo_url?: string | null }[];
+  contact_email?: string;
+  contact_phone?: string;
+  contact_address?: string;
 }
 
 export interface Job {
@@ -319,6 +324,15 @@ export const settingsApi = {
       url: "/settings/",
       method: "PUT",
       data,
+    }),
+  uploadLogo: (data: FormData) =>
+    request<{ url: string }>({
+      url: "/settings/upload-logo",
+      method: "POST",
+      data,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     }),
 };
 

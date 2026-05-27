@@ -29,7 +29,7 @@ const AdminSettings = () => {
           {(["light", "dark"] as const).map((m) => (
             <button
               key={m}
-              onClick={() => setMode(m)}
+              onClick={() => setMode(m, true)}
               className={`flex flex-1 items-center justify-center gap-2 rounded-lg border p-4 text-sm transition-all ${
                 mode === m ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/40"
               }`}
@@ -49,7 +49,7 @@ const AdminSettings = () => {
           {PALETTES.map((p) => (
             <button
               key={p.id}
-              onClick={() => setPalette(p.id)}
+              onClick={() => setPalette(p.id, true)}
               className={`flex flex-col items-center gap-2 rounded-lg border p-4 text-sm transition-all ${
                 palette === p.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"
               }`}
@@ -69,7 +69,7 @@ const AdminSettings = () => {
           {DESIGNS.map((d) => (
             <button
               key={d.id}
-              onClick={() => setDesign(d.id)}
+              onClick={() => setDesign(d.id, true)}
               className={`flex flex-col items-start gap-1 rounded-lg border p-4 text-left transition-all ${
                 design === d.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"
               }`}

@@ -28,6 +28,10 @@ const Home = () => {
   const servicesList = (liveServices && liveServices.length > 0)
     ? liveServices.filter((sv) => sv.show_on_home !== false).sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0))
     : fallbackServices.map((sv, i) => ({ id: i, title: sv.title, description: sv.description }));
+  const savedTestimonials = s.testimonials?.filter((t) => t.name?.trim() && t.text?.trim()) || [];
+  const savedTrustedCompanies = s.trusted_companies?.filter((company) => company.name?.trim()) || [];
+  const testimonialsList = s.testimonials ? savedTestimonials : testimonials;
+  const trustedCompanies = s.trusted_companies ? savedTrustedCompanies : trustedBy;
 
   return (
     <Layout>
@@ -42,13 +46,13 @@ const Home = () => {
               initial={{ width: 0 }}
               animate={{ width: "auto" }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="mb-6 inline-flex items-center gap-2 overflow-hidden rounded-full border border-primary/30 bg-primary/5 px-4 py-1.5"
+              className="mb-6 inline-flex pr-7 md:pr-4 gap-2 overflow-hidden rounded-full border border-primary/30 bg-primary/5 px-4 py-1.5"
             >
-              <span className="relative flex h-2 w-2">
+              <span className="relative flex h-2 w-2 mt-1">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
               </span>
-              <span className="whitespace-nowrap text-xs font-medium text-primary">{s.hero_eyebrow || "Citizen Infotech · Software Studio"}</span>
+              <span className=" text-xs font-medium text-primary">{s.hero_eyebrow || "Citizen Infotech · Software Studio"}</span>
             </motion.div>
 
             <h1 className="max-w-3xl font-heading text-4xl font-bold leading-tight text-foreground md:text-6xl lg:text-7xl">
@@ -91,43 +95,6 @@ const Home = () => {
             </motion.div>
           </motion.div>
 
-          {/* Tags */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.1, duration: 0.6 }}
-            className="mt-16 flex flex-wrap gap-3"
-          >
-            {["Custom development", "Web · Mobile · APIs", "Built to last", "Tested · Secure"].map((t, i) => (
-              <motion.span
-                key={t}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.1 + i * 0.1 }}
-                className="rounded-full border border-border bg-secondary/50 px-4 py-1.5 text-xs text-muted-foreground backdrop-blur-sm"
-              >
-                {t}
-              </motion.span>
-            ))}
-          </motion.div>
-
-          {/* Sectors */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.4 }} className="mt-16">
-            <p className="mb-4 text-xs font-medium uppercase tracking-widest text-muted-foreground">Trusted by teams across</p>
-            <div className="flex flex-wrap gap-3">
-              {["Finance", "Healthcare", "Education", "E-commerce", "Government"].map((s, i) => (
-                <motion.span
-                  key={s}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 1.5 + i * 0.08 }}
-                  className="rounded-md border border-border/50 bg-card px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
-                >
-                  {s}
-                </motion.span>
-              ))}
-            </div>
-          </motion.div>
         </div>
       </section>
 
@@ -256,7 +223,7 @@ const Home = () => {
             <h2 className="mt-3 font-heading text-3xl font-bold text-foreground md:text-4xl">What clients say after we ship.</h2>
           </AnimatedSection>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {testimonials.map((t, i) => (
+            {testimonialsList.map((t, i) => (
               <AnimatedSection key={i} delay={i * 0.12}>
                 <motion.div
                   whileHover={{ y: -4 }}
@@ -284,7 +251,7 @@ const Home = () => {
       <section className="section-padding !py-12">
         <div className="container-tight">
           <p className="mb-2 text-center text-xs font-medium uppercase tracking-widest text-muted-foreground">Trusted by teams who care about the details</p>
-          <Marquee items={trustedBy} />
+          <Marquee items={trustedCompanies} />
         </div>
       </section>
 

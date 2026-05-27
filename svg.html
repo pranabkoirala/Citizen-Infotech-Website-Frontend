@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SVG Color Test (Fetch + Inline)</title>
+
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --bg: #0f172a;
+            --text: white;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            gap: 30px;
+        }
+
+        .box {
+            padding: 30px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        /* SVG container */
+        .logo svg {
+            width: 350px;
+            height: auto;
+            border: 2px dashed var(--primary);
+            padding: 10px;
+        }
+
+        /* KEY PART: recolor SVG */
+        .logo path,
+        .logo rect,
+        .logo circle,
+        .logo text {
+            fill: var(--primary) !important;
+            stroke: var(--primary) !important;
+            transition: 0.3s ease;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid white;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+        }
+
+        .label {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        <h2>SVG Color Change Test</h2>
+        <div class="label">If color changes → your SVG is working correctly</div>
+    </div>
+
+    <div class="box logo" id="logo">
+        Loading SVG...
+    </div>
+
+    <div class="controls">
+        <div class="btn" style="background:#0ea5e9" onclick="setColor('#0ea5e9')"></div>
+        <div class="btn" style="background:#f97316" onclick="setColor('#f97316')"></div>
+        <div class="btn" style="background:#22c55e" onclick="setColor('#22c55e')"></div>
+        <div class="btn" style="background:#a855f7" onclick="setColor('#a855f7')"></div>
+        <div class="btn" style="background:#ef4444" onclick="setColor('#ef4444')"></div>
+    </div>
+
+    <script>
+        // LOAD SVG INLINE
+        fetch("citizen logo svg.svg")
+            .then(res => res.text())
+            .then(svg => {
+                document.getElementById("logo").innerHTML = svg;
+            });
+
+        // CHANGE COLOR
+        function setColor(color) {
+            document.documentElement.style.setProperty('--primary', color);
+            console.log("Color changed to:", color);
+        }
+    </script>
+
+</body>
+
+</html>

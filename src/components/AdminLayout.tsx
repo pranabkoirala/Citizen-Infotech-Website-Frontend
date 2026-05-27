@@ -71,7 +71,7 @@ const AdminLayout = () => {
       <main className="ml-56 flex-1">
         <div className="flex h-14 items-center justify-end gap-3 border-b border-border bg-card/50 px-8 backdrop-blur">
           <span className="text-xs text-muted-foreground">Quick theme</span>
-          <ThemeSwitcher />
+          <ThemeSwitcher allowThemeControls persistChanges />
         </div>
         <div className="p-8">
           <Outlet />

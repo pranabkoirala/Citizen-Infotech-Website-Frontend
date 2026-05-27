@@ -83,11 +83,17 @@ export const testimonials = [
 export const stats = [
   { label: "Years of experience", value: "14+" },
   { label: "Projects delivered", value: "80+" },
-  { label: "Client satisfaction", value: "98%" },
-  { label: "Support & uptime", value: "24/7" },
+  { label: "Client Served", value: "100+" },
+  { label: "Business Domains Covered", value: "10+" },
 ];
 
-export const trustedBy = ["GIZ", "Adra", "ZkTEco", "WHO", "Government Of Nepal"];
+export const trustedBy = [
+  { name: "GIZ" },
+  { name: "Adra" },
+  { name: "ZkTEco" },
+  { name: "WHO" },
+  { name: "Government Of Nepal" },
+];
 
 export const processSteps = [
   { step: "01", title: "Discover", description: "We start with your goals, constraints, and users — turning intent into a clear plan with measurable outcomes." },

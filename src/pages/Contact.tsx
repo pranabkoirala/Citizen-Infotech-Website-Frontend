@@ -2,9 +2,10 @@ import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import { useState } from "react";
 import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react";
-import { messagesApi } from "@/lib/api";
+import { messagesApi, settingsApi } from "@/lib/api";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useQuery } from "@tanstack/react-query";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name too long"),
@@ -15,9 +16,13 @@ const contactSchema = z.object({
 const Contact = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
+  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: settingsApi.get, retry: false });
+  const email = settings?.contact_email || "info@citizeninfotechnepal.com";
+  const phone = settings?.contact_phone || "+977-9768770259";
+  const address = settings?.contact_address || "Pashupati Colony, Mid Baneshwor, Kathmandu, Nepal";
+  const phoneHref = phone.replace(/[^\d+]/g, "");
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log(form, "hello");
     e.preventDefault();
     const parsed = contactSchema.safeParse(form);
     if (!parsed.success) {
@@ -76,21 +81,21 @@ const Contact = () => {
                   <Mail size={18} className="mt-0.5 text-primary" />
                   <div>
                     <p className="text-sm font-medium text-foreground">Email</p>
-                    <a href="mailto:info@citizeninfotechnepal.com" className="text-sm text-muted-foreground hover:text-primary">info@citizeninfotechnepal.com</a>
+                    <a href={`mailto:${email}`} className="text-sm text-muted-foreground hover:text-primary">{email}</a>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Phone size={18} className="mt-0.5 text-primary" />
                   <div>
                     <p className="text-sm font-medium text-foreground">Phone</p>
-                    <a href="tel:+9779768770259" className="text-sm text-muted-foreground hover:text-primary">+977-9768770259</a>
+                    <a href={`tel:${phoneHref}`} className="text-sm text-muted-foreground hover:text-primary">{phone}</a>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <MapPin size={18} className="mt-0.5 text-primary" />
                   <div>
                     <p className="text-sm font-medium text-foreground">Address</p>
-                    <p className="text-sm text-muted-foreground">Pashupati Colony, Mid Baneshwor, Kathmandu, Ward 01, Nepal</p>
+                    <p className="text-sm text-muted-foreground">{address}</p>
                   </div>
                 </div>
               </div>

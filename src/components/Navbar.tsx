@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 
 const links = [
@@ -20,8 +21,8 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="container-tight flex h-16 items-center justify-between px-6">
-        <Link to="/" className="font-heading text-lg font-bold tracking-tight text-foreground">
-          Citizen Infotech
+        <Link to="/" className="-ml-2 flex items-center text-foreground transition-colors hover:text-primary" aria-label="Citizen Infotech home">
+          <span className="theme-logo" aria-hidden="true" />
         </Link>
 
         {/* Desktop */}
@@ -44,12 +45,16 @@ const Navbar = () => {
           >
             Get in touch
           </Link>
+          <ThemeSwitcher />
         </div>
 
         {/* Mobile toggle */}
-        <button onClick={() => setOpen(!open)} className="text-foreground md:hidden">
-          {open ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeSwitcher />
+          <button onClick={() => setOpen(!open)} className="text-foreground">
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
