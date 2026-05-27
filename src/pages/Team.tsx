@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import FloatingParticles from "@/components/FloatingParticles";
 import { teamMembers as fallback } from "@/lib/data";
-import { teamApi } from "@/lib/api";
+import { mediaUrl, teamApi } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { User } from "lucide-react";
@@ -29,9 +29,6 @@ const Team = () => {
   });
   // Use API data when available, fall back to static list when backend is unreachable
   const members = data && data.length > 0 ? data : fallback;
-  console.log(members);
-
-
 
   return (
     <Layout>
@@ -57,25 +54,28 @@ const Team = () => {
             viewport={{ once: true }}
             className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
           >
-            {members.map((m, i) => (
-              <motion.div
-                key={m.id}
-                variants={item}
-                whileHover={{ y: -6, scale: 1.03, transition: { duration: 0.2 } }}
-                className="glass-card-hover group rounded-xl p-4 text-center cursor-pointer"
-              >
-                <div className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br ${colors[i % colors.length]} overflow-hidden`}>
-                  {m.img ? (
-                    <img src={m.img} alt={m.name} className="h-full w-full object-cover" />
-                  ) : (
-                    <User size={22} className="text-foreground/60" />
-                  )}
-                </div>
-                <h3 className="mt-3 text-sm font-semibold text-foreground leading-tight">{m.name}</h3>
-                <p className="mt-1 text-[11px] text-muted-foreground">{m.role}</p>
-                <div className="mt-3 h-0.5 w-0 mx-auto rounded bg-primary/30 transition-all duration-500 group-hover:w-3/4" />
-              </motion.div>
-            ))}
+            {members.map((m, i) => {
+              const imageSrc = m.image_url ? mediaUrl(m.image_url) : m.img;
+              return (
+                <motion.div
+                  key={m.id}
+                  variants={item}
+                  whileHover={{ y: -6, scale: 1.03, transition: { duration: 0.2 } }}
+                  className="glass-card-hover group rounded-xl p-4 text-center cursor-pointer"
+                >
+                  <div className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br ${colors[i % colors.length]} overflow-hidden`}>
+                    {imageSrc ? (
+                      <img src={imageSrc} alt={m.name} className="h-full w-full object-cover" />
+                    ) : (
+                      <User size={22} className="text-foreground/60" />
+                    )}
+                  </div>
+                  <h3 className="mt-3 text-sm font-semibold text-foreground leading-tight">{m.name}</h3>
+                  <p className="mt-1 text-[11px] text-muted-foreground">{m.role}</p>
+                  <div className="mt-3 h-0.5 w-0 mx-auto rounded bg-primary/30 transition-all duration-500 group-hover:w-3/4" />
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </section>

@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { DndContext, closestCenter, DragEndEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { teamApi, type TeamMember } from "@/lib/api";
-import { GripVertical, Plus, Pencil, Trash2, User, X, Loader2 } from "lucide-react";
+import { mediaUrl, teamApi, type TeamMember } from "@/lib/api";
+import { GripVertical, Plus, Pencil, Trash2, User, X, Loader2, ImagePlus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
@@ -18,7 +18,7 @@ const SortableItem = ({ member, onEdit, onDelete }: { member: TeamMember; onEdit
         <GripVertical size={16} />
       </button>
       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary overflow-hidden">
-        {member.image_url ? <img src={member.image_url} alt={member.name} className="h-full w-full object-cover" /> : <User size={16} className="text-muted-foreground" />}
+        {member.image_url ? <img src={mediaUrl(member.image_url)} alt={member.name} className="h-full w-full object-cover" /> : <User size={16} className="text-muted-foreground" />}
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-foreground truncate">{member.name}</p>
@@ -30,6 +30,13 @@ const SortableItem = ({ member, onEdit, onDelete }: { member: TeamMember; onEdit
   );
 };
 
+async function uploadTeamImage(file: File): Promise<string> {
+  const body = new FormData();
+  body.append("file", file);
+  const result = await teamApi.uploadImage(body);
+  return result.url;
+}
+
 const AdminTeam = () => {
   const qc = useQueryClient();
   const { data: members = [], isLoading, error } = useQuery({ queryKey: ["team"], queryFn: teamApi.getAll });
@@ -37,6 +44,17 @@ const AdminTeam = () => {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<TeamMember | null>(null);
   const [form, setForm] = useState({ name: "", role: "", bio: "", image_url: "" });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -75,15 +93,40 @@ const AdminTeam = () => {
     }
   };
 
-  const openAdd = () => { setEditing(null); setForm({ name: "", role: "", bio: "", image_url: "" }); setShowForm(true); };
-  const openEdit = (m: TeamMember) => { setEditing(m); setForm({ name: m.name, role: m.role, bio: m.bio || "", image_url: m.image_url || "" }); setShowForm(true); };
+  const openAdd = () => {
+    setEditing(null);
+    setForm({ name: "", role: "", bio: "", image_url: "" });
+    setImageFile(null);
+    setImagePreview("");
+    setShowForm(true);
+  };
+  const openEdit = (m: TeamMember) => {
+    setEditing(m);
+    setForm({ name: m.name, role: m.role, bio: m.bio || "", image_url: m.image_url || "" });
+    setImageFile(null);
+    setImagePreview(mediaUrl(m.image_url) || "");
+    setShowForm(true);
+  };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.name || !form.role) return;
+    let image_url = form.image_url;
+    if (imageFile) {
+      try {
+        setUploadingImage(true);
+        image_url = await uploadTeamImage(imageFile);
+      } catch {
+        toast.error("Image upload failed");
+        return;
+      } finally {
+        setUploadingImage(false);
+      }
+    }
+    const payload = { ...form, image_url };
     if (editing) {
-      updateMut.mutate({ id: editing.id, data: form });
+      updateMut.mutate({ id: editing.id, data: payload });
     } else {
-      createMut.mutate({ ...form, order_index: members.length });
+      createMut.mutate({ ...payload, order_index: members.length });
     }
   };
 
@@ -127,10 +170,42 @@ const AdminTeam = () => {
               <div className="space-y-3">
                 <input placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none" />
                 <input placeholder="Role" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none" />
-                <input placeholder="Image URL (optional)" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none" />
+
+                {/* Image upload */}
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex w-full items-center gap-2 rounded-lg border border-dashed border-border bg-background px-3 py-2 text-sm text-muted-foreground hover:border-primary hover:text-foreground transition-colors"
+                  >
+                    <ImagePlus size={16} />
+                    {imageFile ? imageFile.name : "Upload photo (optional)"}
+                  </button>
+                  {imagePreview && (
+                    <div className="relative mt-2 flex items-center gap-3">
+                      <img src={imagePreview} alt="Preview" className="h-14 w-14 rounded-full object-cover border border-border" />
+                      <span className="text-xs text-muted-foreground">{imageFile ? "New image selected" : "Current image"}</span>
+                      <button
+                        type="button"
+                        onClick={() => { setImageFile(null); setImagePreview(""); setForm({ ...form, image_url: "" }); if (fileInputRef.current) fileInputRef.current.value = ""; }}
+                        className="ml-auto rounded p-1 text-muted-foreground hover:text-destructive"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <textarea placeholder="Bio (optional)" rows={3} value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} className="w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none" />
-                <button onClick={handleSave} disabled={createMut.isPending || updateMut.isPending} className="w-full rounded-lg bg-primary py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50">
-                  {createMut.isPending || updateMut.isPending ? "Saving…" : editing ? "Save changes" : "Add member"}
+                <button onClick={handleSave} disabled={uploadingImage || createMut.isPending || updateMut.isPending} className="w-full rounded-lg bg-primary py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50">
+                  {uploadingImage ? "Uploading image…" : createMut.isPending || updateMut.isPending ? "Saving…" : editing ? "Save changes" : "Add member"}
                 </button>
               </div>
             </motion.div>

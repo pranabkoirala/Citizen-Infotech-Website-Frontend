@@ -209,6 +209,15 @@ export const usersApi = {
 // ---- Team ----
 export const teamApi = {
   getAll: () => request<TeamMember[]>({ url: "/team/" }),
+  uploadImage: (data: FormData) =>
+    request<{ url: string }>({
+      url: "/team/upload-image",
+      method: "POST",
+      data,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }),
   create: (data: Omit<TeamMember, "id">) =>
     request<TeamMember>({
       url: "/team/",
