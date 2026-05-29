@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -69,6 +70,9 @@ const serviceIcons = [
 ];
 
 const Home = () => {
+  const [expandedServices, setExpandedServices] = useState<Record<string, boolean>>({});
+  const [expandedProjects, setExpandedProjects] = useState<Record<number, boolean>>({});
+
   const { data: settings } = useQuery({
     queryKey: ["settings"],
     queryFn: settingsApi.get,
@@ -125,6 +129,14 @@ const Home = () => {
   const trustedCompanies = s.trusted_companies
     ? savedTrustedCompanies
     : trustedBy;
+
+  const toggleService = (id: string) => {
+    setExpandedServices((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const toggleProject = (id: number) => {
+    setExpandedProjects((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   return (
     <Layout>
@@ -318,6 +330,7 @@ const Home = () => {
             {servicesList.map((sv, i) => {
               const Icon =
                 serviceIcons[i % serviceIcons.length] || Code;
+              const serviceId = String(sv.id ?? i);
 
               return (
                 <motion.div
@@ -342,9 +355,21 @@ const Home = () => {
                     {sv.title}
                   </h3>
 
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  <p
+                    className={`mt-2 text-sm leading-relaxed text-muted-foreground ${
+                      expandedServices[serviceId] ? "" : "line-clamp-2"
+                    }`}
+                  >
                     {sv.description}
                   </p>
+
+                  <button
+                    type="button"
+                    onClick={() => toggleService(serviceId)}
+                    className="mt-3 text-xs font-medium text-primary hover:underline"
+                  >
+                    {expandedServices[serviceId] ? "Read less" : "Read more"}
+                  </button>
                 </motion.div>
               );
             })}
@@ -410,9 +435,24 @@ const Home = () => {
                     {p.title}
                   </h3>
 
-                  <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
+                  <p
+                    className={`mt-2 text-sm leading-relaxed text-muted-foreground ${
+                      expandedProjects[p.id] ? "" : "line-clamp-2"
+                    }`}
+                  >
                     {p.description}
                   </p>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleProject(p.id);
+                    }}
+                    className="mt-4 inline-flex w-fit items-center gap-1 rounded-full border border-primary/30 px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+                  >
+                    {expandedProjects[p.id] ? "Read less" : "Read more"}
+                  </button>
                 </motion.div>
               </AnimatedSection>
             ))}

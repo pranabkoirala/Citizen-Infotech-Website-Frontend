@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { DndContext, closestCenter, DragEndEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, DragOverlay, closestCenter, DragCancelEvent, DragEndEvent, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { mediaUrl, teamApi, type TeamMember } from "@/lib/api";
@@ -8,24 +8,54 @@ import { GripVertical, Plus, Pencil, Trash2, User, X, Loader2, ImagePlus } from 
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
+const TeamCard = ({
+  member,
+  dragHandle,
+  onEdit,
+  onDelete,
+  dragging = false,
+}: {
+  member: TeamMember;
+  dragHandle?: React.ReactNode;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  dragging?: boolean;
+}) => (
+  <div className={`flex items-center gap-3 rounded-lg border border-border bg-card p-3 transition-shadow ${dragging ? "shadow-xl" : "hover:shadow-lg"}`}>
+    {dragHandle}
+    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary overflow-hidden">
+      {member.image_url ? <img src={mediaUrl(member.image_url)} alt={member.name} className="h-full w-full object-cover" /> : <User size={16} className="text-muted-foreground" />}
+    </div>
+    <div className="flex-1 min-w-0">
+      <p className="text-sm font-medium text-foreground truncate">{member.name}</p>
+      <p className="text-xs text-muted-foreground">{member.role}</p>
+    </div>
+    {onEdit && <button onClick={onEdit} className="rounded p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"><Pencil size={14} /></button>}
+    {onDelete && <button onClick={onDelete} className="rounded p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"><Trash2 size={14} /></button>}
+  </div>
+);
+
 const SortableItem = ({ member, onEdit, onDelete }: { member: TeamMember; onEdit: () => void; onDelete: () => void }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: member.id });
-  const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 50 : undefined, opacity: isDragging ? 0.5 : 1 };
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : undefined,
+    touchAction: "none",
+  };
 
   return (
-    <div ref={setNodeRef} style={style} className="flex items-center gap-3 rounded-lg border border-border bg-card p-3 transition-shadow hover:shadow-lg">
-      <button {...attributes} {...listeners} className="cursor-grab text-muted-foreground hover:text-foreground">
-        <GripVertical size={16} />
-      </button>
-      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary overflow-hidden">
-        {member.image_url ? <img src={mediaUrl(member.image_url)} alt={member.name} className="h-full w-full object-cover" /> : <User size={16} className="text-muted-foreground" />}
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-foreground truncate">{member.name}</p>
-        <p className="text-xs text-muted-foreground">{member.role}</p>
-      </div>
-      <button onClick={onEdit} className="rounded p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"><Pencil size={14} /></button>
-      <button onClick={onDelete} className="rounded p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"><Trash2 size={14} /></button>
+    <div ref={setNodeRef} style={style}>
+      <TeamCard
+        member={member}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        dragHandle={(
+          <button {...attributes} {...listeners} className="cursor-grab text-muted-foreground hover:text-foreground">
+            <GripVertical size={16} />
+          </button>
+        )}
+      />
     </div>
   );
 };
@@ -40,6 +70,8 @@ async function uploadTeamImage(file: File): Promise<string> {
 const AdminTeam = () => {
   const qc = useQueryClient();
   const { data: members = [], isLoading, error } = useQuery({ queryKey: ["team"], queryFn: teamApi.getAll });
+  const [orderedMembers, setOrderedMembers] = useState<TeamMember[]>([]);
+  const [activeId, setActiveId] = useState<number | null>(null);
 
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<TeamMember | null>(null);
@@ -57,6 +89,14 @@ const AdminTeam = () => {
   };
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+  const activeMember = activeId ? orderedMembers.find((member) => member.id === activeId) : null;
+  const visibleMembers = activeId ? orderedMembers.filter((member) => member.id !== activeId) : orderedMembers;
+
+  useEffect(() => {
+    if (!activeId) {
+      setOrderedMembers(members);
+    }
+  }, [activeId, members]);
 
   const reorderMut = useMutation({
     mutationFn: teamApi.reorder,
@@ -66,7 +106,14 @@ const AdminTeam = () => {
 
   const createMut = useMutation({
     mutationFn: teamApi.create,
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["team"] }); toast.success("Member added"); setShowForm(false); },
+    onSuccess: (created) => {
+      const nextMembers = [...orderedMembers, created];
+      setOrderedMembers(nextMembers);
+      qc.setQueryData(["team"], nextMembers);
+      qc.invalidateQueries({ queryKey: ["team"] });
+      toast.success("Member added");
+      setShowForm(false);
+    },
     onError: (e) => toast.error(`Failed: ${e instanceof Error ? e.message : "error"}`),
   });
 
@@ -82,15 +129,29 @@ const AdminTeam = () => {
     onError: (e) => toast.error(`Failed: ${e instanceof Error ? e.message : "error"}`),
   });
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(Number(event.active.id));
+  };
+
+  const handleDragCancel = (_event: DragCancelEvent) => {
+    setActiveId(null);
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      const oldIndex = members.findIndex((i) => i.id === active.id);
-      const newIndex = members.findIndex((i) => i.id === over.id);
-      const reordered = arrayMove(members, oldIndex, newIndex);
+      const oldIndex = orderedMembers.findIndex((i) => i.id === active.id);
+      const newIndex = orderedMembers.findIndex((i) => i.id === over.id);
+      if (oldIndex < 0 || newIndex < 0) {
+        setActiveId(null);
+        return;
+      }
+      const reordered = arrayMove(orderedMembers, oldIndex, newIndex);
+      setOrderedMembers(reordered);
       qc.setQueryData(["team"], reordered);
       reorderMut.mutate(reordered.map((m, i) => ({ id: m.id, order_index: i })));
     }
+    setActiveId(null);
   };
 
   const openAdd = () => {
@@ -126,7 +187,7 @@ const AdminTeam = () => {
     if (editing) {
       updateMut.mutate({ id: editing.id, data: payload });
     } else {
-      createMut.mutate({ ...payload, order_index: members.length });
+        createMut.mutate({ ...payload, order_index: orderedMembers.length });
     }
   };
 
@@ -149,14 +210,23 @@ const AdminTeam = () => {
       {isLoading && <div className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 size={14} className="animate-spin" /> Loading…</div>}
       {error && <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">Failed to load team. Is the backend running?</div>}
 
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={members.map((m) => m.id)} strategy={verticalListSortingStrategy}>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragCancel={handleDragCancel} onDragEnd={handleDragEnd}>
+        <SortableContext items={visibleMembers.map((m) => m.id)} strategy={verticalListSortingStrategy}>
           <div className="space-y-2">
-            {members.map((m) => (
+            {visibleMembers.map((m) => (
               <SortableItem key={m.id} member={m} onEdit={() => openEdit(m)} onDelete={() => handleDelete(m.id)} />
             ))}
           </div>
         </SortableContext>
+        <DragOverlay dropAnimation={null}>
+          {activeMember ? (
+            <TeamCard
+              member={activeMember}
+              dragging
+              dragHandle={<GripVertical size={16} className="text-primary" />}
+            />
+          ) : null}
+        </DragOverlay>
       </DndContext>
 
       <AnimatePresence>

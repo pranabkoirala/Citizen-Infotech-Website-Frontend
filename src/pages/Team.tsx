@@ -1,11 +1,10 @@
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import FloatingParticles from "@/components/FloatingParticles";
-import { teamMembers as fallback } from "@/lib/data";
 import { mediaUrl, teamApi } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { User } from "lucide-react";
+import { Loader2, User } from "lucide-react";
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.03 } } };
 const item = {
@@ -22,13 +21,15 @@ const colors = [
 ];
 
 const Team = () => {
-  const { data } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["team"],
     queryFn: teamApi.getAll,
     retry: 0,
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
-  // Use API data when available, fall back to static list when backend is unreachable
-  const members = data && data.length > 0 ? data : fallback;
+  const members = data || [];
 
   return (
     <Layout>
@@ -54,6 +55,19 @@ const Team = () => {
             viewport={{ once: true }}
             className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
           >
+            {isLoading && (
+              <div className="col-span-full flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 size={16} className="animate-spin" />
+                Loading team members...
+              </div>
+            )}
+
+            {isError && (
+              <div className="col-span-full rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+                Team members could not be loaded. Please make sure the backend is running.
+              </div>
+            )}
+
             {members.map((m, i) => {
               const imageSrc = m.image_url ? mediaUrl(m.image_url) : m.img;
               return (

@@ -5,7 +5,9 @@ const getBaseUrl = () => {
   const configuredUrl = import.meta.env.VITE_API_URL?.trim();
   if (configuredUrl) return configuredUrl.replace(/\/$/, "");
   if (typeof window !== "undefined") {
-    return `${window.location.protocol}//${window.location.hostname}:8000`;
+    const host = window.location.hostname;
+    if (!host || host === "localhost") return "http://127.0.0.1:8000";
+    return `${window.location.protocol}//${host}:8000`;
   }
   return "http://127.0.0.1:8000";
 };
