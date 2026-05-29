@@ -49,7 +49,7 @@ const Work = () => {
 
   return (
     <Layout>
-      <section className="relative overflow-hidden section-padding !pt-28">
+      <section className="relative overflow-hidden section-padding !pb-16 !pt-28 lg:!pb-20">
         <GradientOrbs />
         <div className="absolute inset-0 grid-bg opacity-20" />
 
@@ -80,7 +80,7 @@ const Work = () => {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="mt-12 flex flex-col gap-5"
+            className="mt-10 flex flex-col gap-4"
           >
             {projects?.map((p, i) => (
               <motion.div
@@ -153,8 +153,8 @@ const Work = () => {
           </motion.div>
 
           {/* CTA */}
-          <AnimatedSection className="mt-20">
-            <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-primary/5 p-10 text-center">
+          <AnimatedSection className="mt-5 md:mt-6">
+            <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-primary/5 p-7 text-center md:p-8">
               <h2 className="font-heading text-2xl font-bold text-foreground">
                 Have a system to build?
               </h2>
