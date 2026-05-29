@@ -105,6 +105,7 @@ export interface Project {
   year: string;
   description: string;
   image_url?: string;
+  order_index?: number;
   visible_on_home?: boolean;
 }
 
@@ -121,6 +122,8 @@ export interface SiteSettings {
   palette?: string;
   mode?: string;
   design?: string;
+  logo_variant?: string;
+  logo_style?: string;
   hero_eyebrow?: string;
   hero_title_line1?: string;
   hero_title_line2?: string;
@@ -290,19 +293,29 @@ export const pagesApi = {
 };
 
 // ---- Projects ----
+type ProjectPayload = Omit<Project, "id"> | FormData;
+
 export const projectsApi = {
   getAll: () => request<Project[]>({ url: "/projects/" }),
-  create: (data: Omit<Project, "id">) =>
+  create: (data: ProjectPayload) =>
     request<Project>({
       url: "/projects/",
       method: "POST",
       data,
+      headers: data instanceof FormData ? { "Content-Type": "multipart/form-data" } : undefined,
     }),
-  update: (id: number, data: Partial<Project>) =>
+  update: (id: number, data: Partial<Project> | FormData) =>
     request<Project>({
       url: `/projects/${id}`,
       method: "PUT",
       data,
+      headers: data instanceof FormData ? { "Content-Type": "multipart/form-data" } : undefined,
+    }),
+  reorder: (items: { id: number; order_index: number }[]) =>
+    request<{ message: string }>({
+      url: "/projects/reorder",
+      method: "PUT",
+      data: items,
     }),
   delete: (id: number) => request<void>({ url: `/projects/${id}`, method: "DELETE" }),
 };
@@ -321,6 +334,12 @@ export const servicesApi = {
       url: `/services/${id}`,
       method: "PUT",
       data,
+    }),
+  reorder: (items: { id: number; order_index: number }[]) =>
+    request<{ message: string }>({
+      url: "/services/reorder",
+      method: "PUT",
+      data: items,
     }),
   delete: (id: number) => request<void>({ url: `/services/${id}`, method: "DELETE" }),
 };
@@ -387,4 +406,22 @@ export const insideApi = {
       data: items,
     }),
   delete: (id: number) => request<void>({ url: `/inside/${id}`, method: "DELETE" }),
+};
+
+// ---- Admin Seed ----
+export interface SeedResult {
+  mode: string;
+  settings: { updated: number };
+  services: { created: number; updated: number };
+  projects: { created: number; updated: number };
+  team: { created: number; updated: number };
+}
+
+export const seedApi = {
+  run: (mode: "upsert" | "replace" = "upsert") =>
+    request<SeedResult>({
+      url: "/admin/seed-content",
+      method: "POST",
+      data: { mode },
+    }),
 };

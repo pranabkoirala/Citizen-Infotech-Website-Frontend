@@ -1,6 +1,5 @@
 // Static fallback data used when API is unavailable
 import type { TeamMember, Project, Job } from "./api";
-import a1 from "../images/a1.jpg"
 
 export const teamMembers: TeamMember[] = [
   { id: 1, name: "Pranab Koirala", role: "CEO, Co-Founder", order_index: 0 },
@@ -29,7 +28,7 @@ export const teamMembers: TeamMember[] = [
   { id: 24, name: "Anjali Jaiswal", role: "Flutter Developer", order_index: 23 },
   { id: 25, name: "Prashant Chapagain", role: "Python Developer", order_index: 24 },
   { id: 26, name: "Supendra Karki", role: "Public Health Consultant", order_index: 25 },
-  { id: 27, name: "Awan Adhikari", role: "Backend Developer", img: a1, order_index: 26 },
+  { id: 27, name: "Awan Adhikari", role: "Backend Developer", order_index: 26 },
   { id: 28, name: "Dr. Prakash Jyoti Pokharel", role: "Health Consultant", order_index: 27 },
   { id: 29, name: "Sugam Karki", role: "Backend Developer", order_index: 28 },
   { id: 30, name: "Nisha Baral", role: "Health Consultant", order_index: 29 },
@@ -118,3 +117,5 @@ export const hiringSteps = [
   "Test task",
   "You're hired!",
 ];
+
+

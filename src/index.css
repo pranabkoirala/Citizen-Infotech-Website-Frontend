@@ -387,9 +387,10 @@
     width: 170px;
     height: 49px;
     position: relative;
-    background: hsl(var(--foreground));
+    background: hsl(var(--primary));
     mask: url("/citizen_infotech_smooth.svg") center / contain no-repeat;
     -webkit-mask: url("/citizen_infotech_smooth.svg") center / contain no-repeat;
+    filter: drop-shadow(0 6px 14px hsl(var(--primary) / 0.14));
   }
 
   .theme-logo::before,
@@ -397,18 +398,17 @@
     content: "";
     position: absolute;
     inset: 0;
+    background: hsl(var(--foreground));
     mask: url("/citizen_infotech_smooth.svg") center / contain no-repeat;
     -webkit-mask: url("/citizen_infotech_smooth.svg") center / contain no-repeat;
   }
 
   .theme-logo::before {
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--foreground)));
-    clip-path: inset(0 76% 0 0);
+    clip-path: inset(16% 21% 32% 46%);
   }
 
   .theme-logo::after {
-    background: hsl(var(--primary));
-    clip-path: inset(0 0 0 42%);
+    clip-path: inset(70% 2% 5% 72%);
   }
 
   @media (max-width: 767px) {
@@ -447,11 +447,11 @@
   letter-spacing: 0.08em;
   font-style: italic;
 }
-/* Massive italic display headings */
+/* Bold editorial headings */
 [data-design="brutalist"] h1 {
-  font-size: clamp(3rem, 9vw, 7rem) !important;
-  line-height: 0.9 !important;
-  letter-spacing: -0.05em;
+  font-size: clamp(2.35rem, 6vw, 5rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.025em;
   font-weight: 900;
   font-style: italic;
 }
@@ -459,8 +459,8 @@
   display: block;
 }
 [data-design="brutalist"] h2 {
-  font-size: clamp(2rem, 5vw, 3.5rem) !important;
-  letter-spacing: -0.04em;
+  font-size: clamp(1.75rem, 3.6vw, 2.75rem) !important;
+  letter-spacing: -0.02em;
   font-weight: 900;
   border-bottom: 3px solid hsl(var(--foreground));
   padding-bottom: 0.5rem;
@@ -546,10 +546,14 @@
   height: 4px;
   box-shadow: 0 6px 0 hsl(var(--foreground));
 }
+[data-design="brutalist"] .theme-logo {
+  background: hsl(var(--primary));
+  filter: none;
+}
 [data-design="brutalist"] h1,
 [data-design="brutalist"] h2,
 [data-design="brutalist"] h3 {
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   font-weight: 900;
 }
 [data-design="brutalist"] .glass-card,
@@ -703,6 +707,10 @@
   0%, 100% { transform: translate(0, 0) scale(1); }
   33% { transform: translate(40px, -30px) scale(1.1); }
   66% { transform: translate(-30px, 40px) scale(0.95); }
+}
+[data-design="pastel"] .theme-logo {
+  background: hsl(var(--primary));
+  filter: drop-shadow(0 10px 20px hsl(var(--primary) / 0.22));
 }
 
 /* ---------- TERMINAL: hacker CRT, scanlines, blinking cursor ---------- */
@@ -866,6 +874,10 @@
 [data-design="terminal"] .line-glow {
   background: hsl(var(--primary) / 0.4);
   box-shadow: 0 0 8px hsl(var(--primary) / 0.6);
+}
+[data-design="terminal"] .theme-logo {
+  background: hsl(var(--primary));
+  filter: drop-shadow(0 0 10px hsl(var(--primary) / 0.5));
 }
 /* Hide soft visuals */
 [data-design="terminal"] .gradient-orbs {

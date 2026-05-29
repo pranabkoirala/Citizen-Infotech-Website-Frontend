@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import ThemeSwitcher from "./ThemeSwitcher";
+import { useTheme } from "@/contexts/ThemeContext";
 
 
 const links = [
@@ -17,12 +18,21 @@ const links = [
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
+  const { logoVariant } = useTheme();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="container-tight flex h-16 items-center justify-between px-6">
         <Link to="/" className="-ml-2 flex items-center text-foreground transition-colors hover:text-primary" aria-label="Citizen Infotech home">
-          <span className="theme-logo" aria-hidden="true" />
+          {logoVariant === "png" ? (
+            <img
+              src="/citizen-infotech-logo.png"
+              alt="Citizen Infotech"
+              className="h-10 w-auto md:h-12"
+            />
+          ) : (
+            <span className="theme-logo" aria-hidden="true" />
+          )}
         </Link>
 
         {/* Desktop */}

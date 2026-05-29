@@ -27,7 +27,7 @@ import AdminWorks from "./pages/admin/AdminWorks";
 import AdminServices from "./pages/admin/AdminServices";
 import AdminInside from "./pages/admin/AdminInside";
 import NotFound from "./pages/NotFound";
-import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTop from "./components/ScrolltoTop";
 
 const queryClient = new QueryClient();
 

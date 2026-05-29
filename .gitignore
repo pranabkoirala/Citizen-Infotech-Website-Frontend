@@ -21,6 +21,7 @@ dist-ssr
 coverage
 .vite
 *.tsbuildinfo
+vite.config.ts.timestamp-*.mjs
 
 # Loose local image exports in the project root.
 # Keep app assets in public/ and src/ tracked.

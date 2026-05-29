@@ -56,7 +56,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-12 border-t border-border pt-6 text-center text-xs text-muted-foreground">
-          © 2026 Citizen Infotech. All rights reserved.
+          © {new Date().getFullYear()} Citizen Infotech. All rights reserved.
         </div>
       </div>
     </footer>
@@ -64,3 +64,6 @@ const Footer = () => {
 };
 
 export default Footer;
+
+
+
