@@ -180,7 +180,7 @@ const AdminWorks = () => {
   });
 
   const updateMut = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: any }) =>
+    mutationFn: ({ id, data }: { id: number; data: Partial<Project> | FormData }) =>
       projectsApi.update(id, data),
     onSuccess: () => {
       invalidate();

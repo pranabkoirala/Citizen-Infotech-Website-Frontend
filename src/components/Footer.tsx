@@ -4,7 +4,13 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import { settingsApi } from "@/lib/api";
 
 const Footer = () => {
-  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: settingsApi.get, retry: false });
+  const { data: settings } = useQuery({
+    queryKey: ["settings"],
+    queryFn: settingsApi.get,
+    retry: false,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
+  });
   const email = settings?.contact_email || "info@citizeninfotechnepal.com";
   const phone = settings?.contact_phone || "+977-9768770259";
   const address = settings?.contact_address || "Pashupati Colony, Mid Baneshwor, Kathmandu, Nepal";
@@ -64,6 +70,4 @@ const Footer = () => {
 };
 
 export default Footer;
-
-
 

@@ -77,18 +77,24 @@ const Home = () => {
     queryKey: ["settings"],
     queryFn: settingsApi.get,
     retry: false,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 
   const { data: liveProjects } = useQuery({
     queryKey: ["projects"],
     queryFn: projectsApi.getAll,
     retry: false,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 
   const { data: liveServices } = useQuery({
     queryKey: ["services"],
     queryFn: servicesApi.getAll,
     retry: false,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 
   const s = settings || {};

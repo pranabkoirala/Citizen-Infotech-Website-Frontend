@@ -3,12 +3,16 @@ import axios, { AxiosRequestConfig } from "axios";
 // API service — talks to the FastAPI backend
 const getBaseUrl = () => {
   const configuredUrl = import.meta.env.VITE_API_URL?.trim();
-  if (configuredUrl) return configuredUrl.replace(/\/$/, "");
   if (typeof window !== "undefined") {
-    const host = window.location.hostname;
-    if (!host || host === "localhost") return "http://127.0.0.1:8000";
-    return `${window.location.protocol}//${host}:8000`;
+    if (
+      configuredUrl &&
+      !/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/?$/i.test(configuredUrl)
+    ) {
+      return configuredUrl.replace(/\/$/, "");
+    }
+    return "/api";
   }
+  if (configuredUrl) return configuredUrl.replace(/\/$/, "");
   return "http://127.0.0.1:8000";
 };
 
@@ -58,7 +62,13 @@ apiClient.interceptors.response.use(
       if (typeof data.detail === "string") {
         msg = data.detail;
       } else if (Array.isArray(data.detail)) {
-        msg = data.detail.map((e: any) => e.msg || JSON.stringify(e)).join(", ");
+        msg = data.detail
+          .map((e: unknown) =>
+            typeof e === "object" && e !== null && "msg" in e
+              ? String((e as { msg: unknown }).msg)
+              : JSON.stringify(e)
+          )
+          .join(", ");
       } else if (typeof data === "string") {
         msg = data;
       } else {

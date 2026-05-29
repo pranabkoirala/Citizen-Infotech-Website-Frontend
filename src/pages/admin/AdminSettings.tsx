@@ -21,8 +21,8 @@ const AdminSettings = () => {
     try {
       const result = await seedApi.run(seedMode);
       setSeedResult(result);
-    } catch (err: any) {
-      setSeedError(err.message || "Seed failed");
+    } catch (err: unknown) {
+      setSeedError(err instanceof Error ? err.message : "Seed failed");
     } finally {
       setSeedLoading(false);
     }

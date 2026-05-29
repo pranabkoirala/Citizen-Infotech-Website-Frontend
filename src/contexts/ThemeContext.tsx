@@ -63,8 +63,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Pull theme from server on mount so all visitors see admin-chosen theme.
-  useEffect(() => {
+  const loadRemoteTheme = () => {
     settingsApi.get().then((s) => {
       if (s?.palette) { setPaletteState(s.palette as ColorPalette); localStorage.setItem("ci-palette", s.palette); }
       if (s?.mode) { setModeState(s.mode as Mode); localStorage.setItem("ci-mode", s.mode); }
@@ -74,6 +73,13 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem("ci-logo-variant", s.logo_variant);
       }
     }).catch(() => { /* keep local fallback */ });
+  };
+
+  // Pull theme from server so all visitors see admin-chosen theme.
+  useEffect(() => {
+    loadRemoteTheme();
+    window.addEventListener("focus", loadRemoteTheme);
+    return () => window.removeEventListener("focus", loadRemoteTheme);
   }, []);
 
   const persistRemote = async (data: Partial<{ palette: string; mode: string; design: string; logo_variant: string; logo_style: string }>) => {
