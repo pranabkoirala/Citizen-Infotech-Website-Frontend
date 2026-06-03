@@ -1,0 +1,44 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Test/build cache
+coverage
+.vite
+*.tsbuildinfo
+vite.config.ts.timestamp-*.mjs
+
+# Loose local image exports in the project root.
+# Keep app assets in public/ and src/ tracked.
+/*.png
+/*.jpg
+/*.jpeg
+/*.gif
+/*.webp
+/*.svg
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
