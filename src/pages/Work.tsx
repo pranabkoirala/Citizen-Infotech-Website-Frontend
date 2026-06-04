@@ -34,9 +34,7 @@ const Work = () => {
   });
 
   const projects =
-    liveProjects && liveProjects.length > 0
-      ? liveProjects
-      : fallbackProjects;
+    liveProjects && liveProjects.length > 0 ? liveProjects : fallbackProjects;
 
   const [expanded, setExpanded] = useState<Record<number, boolean>>({});
 
@@ -64,13 +62,14 @@ const Work = () => {
             </div>
 
             <h1 className="font-heading text-4xl font-bold text-foreground md:text-5xl">
-              Software we've shipped across health, education and{" "}
-              <span className="gradient-text">government.</span>
+              Explore our <span className="gradient-text">healthcare </span>
+              systems.
             </h1>
 
             <p className="mt-4 text-muted-foreground">
-              Platforms, products and tools — engineered for organizations doing
-              meaningful work, deployed in production, used every day.
+              Quick glance at the smart healthcare systems we’ve built to
+              support records, reporting, clinical workflows, service delivery,
+              and everyday healthcare operations.
             </p>
           </AnimatedSection>
 
@@ -127,8 +126,9 @@ const Work = () => {
                   </h3>
 
                   <p
-                    className={`mt-1 text-sm text-muted-foreground transition-all leading-relaxed break-words ${expanded[p.id] ? "max-w-2xl" : "line-clamp-2 max-w-2xl"
-                      }`}
+                    className={`mt-1 text-sm text-muted-foreground transition-all leading-relaxed break-words ${
+                      expanded[p.id] ? "max-w-2xl" : "line-clamp-2 max-w-2xl"
+                    }`}
                   >
                     {p.description}
                   </p>
@@ -156,19 +156,19 @@ const Work = () => {
           <AnimatedSection className="mt-5 md:mt-6">
             <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-primary/5 p-7 text-center md:p-8">
               <h2 className="font-heading text-2xl font-bold text-foreground">
-                Have a system to build?
+                Interested in our solutions?
               </h2>
 
               <p className="mt-2 text-muted-foreground">
-                Tell us what you're working on — we'll get back within one
-                business day.
+                Connect with us to explore our healthcare systems, digital
+                solutions, and how they can support your organization.
               </p>
 
               <Link
                 to="/contact"
                 className="group mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground hover:shadow-lg hover:shadow-primary/20"
               >
-                Start a project
+                Get in touch
                 <ArrowUpRight
                   size={16}
                   className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

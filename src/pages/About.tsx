@@ -4,19 +4,30 @@ import GradientOrbs from "@/components/GradientOrbs";
 import { pagesApi } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { ArrowRight, Eye, Handshake, Shield } from "lucide-react";
+import { ArrowRight, Lightbulb, ShieldCheck, Users, } from "lucide-react";
 import { motion } from "framer-motion";
 
 const values = [
-  { title: "Clarity first", desc: "We start with the problem, not the tech. Every engagement begins with a tight discovery so we build the right thing.", icon: Eye },
-  { title: "True partnership", desc: "Senior engineers, weekly demos, shared dashboards. You always know where the work stands and where it's heading next.", icon: Handshake },
-  { title: "Built to last", desc: "Tested code, modern stacks, documented systems. We hand off projects you can extend with confidence.", icon: Shield },
+  {
+    title: "Purposeful innovation",
+    desc: "We use technology with clear intent, solving real problems, improving workflows, and creating systems that make everyday work easier.",
+    icon: Lightbulb,
+  },
+  {
+    title: "Built around people",
+    desc: "From healthcare workers to administrators and end users, we design solutions that are practical, usable, and ready for real-world adoption.",
+    icon: Users,
+  },
+  {
+    title: "Reliable by design",
+    desc: "We build systems with security, scalability, support, and long-term use in mind, so organizations can depend on them as they grow.",
+    icon: ShieldCheck,
+  },
 ];
-
 const milestones = [
   { year: "2012", text: "Founded in Kathmandu with a focus on IT consulting" },
   { year: "2016", text: "Expanded into healthcare technology solutions" },
-  { year: "2020", text: "Launched AI-powered CDSS and EHR/EMR systems" },
+  { year: "2020", text: "Launched AI-powered CDSS and EMR system" },
   { year: "2024", text: "Serving 80+ clients across multiple sectors" },
 ];
 
@@ -37,8 +48,8 @@ const About = () => {
             className="text-sm font-medium uppercase tracking-widest text-primary"
           >About us</motion.p>
           <h1 className="mt-3 max-w-2xl font-heading text-4xl font-bold text-foreground md:text-5xl">
-            A team of builders, helping ambitious teams ship{" "}
-            <span className="gradient-text">better software.</span>
+            A team united by purpose, not just
+            <span className="gradient-text"> technology.</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground">
             {aboutPage?.content || "Citizen Infotech provides innovative, scalable solutions to drive business growth and efficiency."}
@@ -56,12 +67,38 @@ const About = () => {
               <div className="h-1 w-8 rounded-full bg-primary" />
               <p className="text-sm font-medium uppercase tracking-widest text-primary">Our story</p>
             </div>
-            <h2 className="font-heading text-2xl font-bold text-foreground md:text-3xl">Software, shipped with intent.</h2>
-            <div className="mt-6 space-y-4 text-sm leading-relaxed text-muted-foreground">
-              <p>CITIZEN INFOTECH PVT. LTD. is a process-driven provider of customized software, web, and AI solutions. Since 2012, we have delivered quality IT services, including website design and development, software development, IT consultancy, Android/iOS app development, and the supply of computers, CCTV cameras, and digital boards.</p>
-              <p>Citizen Infotech specializes in cutting-edge healthcare technology solutions, with a focus on EHR and CDSS which utilize AI models for disease predictions, differential diagnosis, and other advanced features. Our products also include E-HMIS, which automates health recording and reporting across all health facilities nationwide.</p>
-              <p>With these innovative solutions, Citizen Infotech is uniquely positioned to support both public and private sectors in enhancing their services through automation, AI, and efficient data management.</p>
-            </div>
+           <h2 className="font-heading text-2xl font-bold text-foreground md:text-3xl">
+    Purposeful systems for modern healthcare.
+
+</h2>
+
+<div className="mt-6 space-y-4 text-sm leading-relaxed text-muted-foreground">
+  <p>
+    CITIZEN INFOTECH PVT. LTD. is a multidisciplinary technology company
+    building intelligent digital systems for healthcare and growing organizations.
+    Since 2012, we have worked across software engineering, web and mobile
+    development, IT consulting, support, training, and digital infrastructure to
+    help teams move from manual processes to smarter, connected workflows.
+  </p>
+
+  <p>
+    Our primary focus is healthcare technology. We design and develop systems
+    such as EMR(Electronic Medical Record), EHMIS (Electronic Health Management and Information System), MCHMS (Maternal & Child Health Management System) and CDSS(Clinical Decision Support Systems) that help health
+    facilities manage records, reporting, diagnosis support, service delivery,
+    and day-to-day operations more efficiently. By combining practical healthcare
+    workflows with modern AI capabilities, our systems are built to support better
+    decisions, faster access to information, and improved digital coordination.
+  </p>
+
+  <p>
+    Beyond development, our teams across engineering, support, training,
+    implementation, marketing, and operations work together to ensure that every
+    solution is usable, reliable, and ready for real-world adoption. Whether
+    supporting public health programs, private healthcare providers, or other
+    growing industries, Citizen Infotech builds technology that is practical,
+    scalable, and prepared for the future.
+  </p>
+</div>
           </div>
         </AnimatedSection>
       </div>
@@ -112,8 +149,9 @@ const About = () => {
     <AnimatedSection className="section-padding !py-16">
       <div className="container-tight">
         <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-primary/5 p-10 text-center">
-          <h2 className="font-heading text-2xl font-bold text-foreground">Have a project in mind?</h2>
-          <p className="mt-2 text-muted-foreground">Let's talk about what you're building and how we can help ship it.</p>
+          <h2 className="font-heading text-2xl font-bold text-foreground">Have a system to build?</h2>
+          <p className="mt-2 text-muted-foreground">Tell us what you're working on. We'll get back within one
+                business day.</p>
           <Link to="/contact" className="group mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground hover:shadow-lg hover:shadow-primary/20">
             Get in touch <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
           </Link>
