@@ -81,7 +81,7 @@ const ProjectAction = ({ project, className, style }: { project: Project; classN
 
   return (
     <Link to="/contact" className={className} style={style}>
-      Start similar project <ArrowUpRight size={16} />
+      Request a Demo <ArrowUpRight size={16} />
     </Link>
   );
 };

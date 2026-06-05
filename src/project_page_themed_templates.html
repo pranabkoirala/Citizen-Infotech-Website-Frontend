@@ -1,111 +1,668 @@
-
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Syne:wght@400;700;800&family=IBM+Plex+Mono:wght@400;500&family=Nunito:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Syne:wght@400;700;800&family=IBM+Plex+Mono:wght@400;500&family=Nunito:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap');
 
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--color-background-tertiary);color:var(--color-text-primary)}
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+  }
 
-.controls{display:flex;flex-wrap:wrap;gap:8px;padding:1.25rem 1.25rem 0}
-.ctrl-group{display:flex;gap:4px;align-items:center;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:999px;padding:3px}
-.ctrl-label{font-size:11px;color:var(--color-text-secondary);padding:0 8px;white-space:nowrap}
-.cbtn{padding:4px 12px;border-radius:999px;border:none;background:none;font-size:12px;font-weight:500;cursor:pointer;color:var(--color-text-secondary);transition:all 0.15s}
-.cbtn.active{background:var(--color-text-primary);color:var(--color-background-primary)}
-.cbtn:hover:not(.active){background:var(--color-background-secondary)}
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--color-background-tertiary);
+    color: var(--color-text-primary)
+  }
 
-.preview{padding:1.25rem;min-height:520px}
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 1.25rem 1.25rem 0
+  }
 
-/* ── PALETTE TOKENS (injected via JS into .preview) ── */
-.preview[data-palette="ocean"]{--acc:#0ea5e9;--acc-dim:#075985;--acc-bg:#e0f2fe;--acc-txt:#0c4a6e}
-.preview[data-palette="sunset"]{--acc:#f97316;--acc-dim:#9a3412;--acc-bg:#fff7ed;--acc-txt:#7c2d12}
-.preview[data-palette="forest"]{--acc:#22c55e;--acc-dim:#14532d;--acc-bg:#f0fdf4;--acc-txt:#14532d}
-.preview[data-palette="midnight"]{--acc:#a78bfa;--acc-dim:#4c1d95;--acc-bg:#f5f3ff;--acc-txt:#3b0764}
+  .ctrl-group {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: 999px;
+    padding: 3px
+  }
 
-/* ══════════════════════════════════
-   MODERN — glassy, animated, gradient
-═══════════════════════════════════ */
-.modern-wrap{background:var(--color-background-primary);border-radius:16px;overflow:hidden;border:0.5px solid var(--color-border-tertiary)}
-.modern-hero{background:var(--acc-bg);padding:2.5rem 2.5rem 2rem;position:relative;border-bottom:0.5px solid var(--color-border-tertiary)}
-.modern-badge{display:inline-flex;align-items:center;gap:6px;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:999px;padding:4px 12px;font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:1rem}
-.modern-badge i{font-size:13px;color:var(--acc)}
-.modern-title{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:600;letter-spacing:-0.025em;color:var(--color-text-primary);line-height:1.15;max-width:480px}
-.modern-accent-word{color:var(--acc)}
-.modern-meta{display:flex;gap:10px;margin-top:1.25rem;flex-wrap:wrap}
-.modern-pill{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:999px;padding:4px 12px;font-size:12px;color:var(--color-text-secondary)}
-.modern-body{padding:2rem 2.5rem;display:grid;grid-template-columns:1fr 200px;gap:2rem;align-items:start}
-.modern-image{width:200px;height:130px;border-radius:10px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--color-text-secondary);font-family:'IBM Plex Mono',monospace;letter-spacing:0.06em}
-.modern-desc{font-size:14px;line-height:1.75;color:var(--color-text-secondary)}
-.modern-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:1rem}
-.modern-tag{font-size:11px;font-weight:500;padding:3px 10px;border-radius:999px;background:var(--acc-bg);color:var(--acc-txt);border:0.5px solid var(--acc)}
-.modern-footer{padding:1.25rem 2.5rem;border-top:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between}
-.modern-btn{display:inline-flex;align-items:center;gap:6px;background:var(--acc);color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:500;border:none;cursor:pointer}
-.modern-link{font-size:13px;color:var(--color-text-secondary);display:flex;align-items:center;gap:5px;cursor:pointer;background:none;border:none}
+  .ctrl-label {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    padding: 0 8px;
+    white-space: nowrap
+  }
 
-/* ══════════════════════════════════
-   BRUTALIST — editorial, sharp, serif
-═══════════════════════════════════ */
-.brut-wrap{background:var(--color-background-primary);border-radius:0;border:2px solid var(--color-text-primary);overflow:hidden}
-.brut-top{background:var(--color-text-primary);padding:2rem 2rem 1.75rem}
-.brut-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--acc);margin-bottom:.75rem}
-.brut-title{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;line-height:1.05;color:var(--color-background-primary);letter-spacing:-0.03em}
-.brut-rule{width:40px;height:3px;background:var(--acc);margin:1rem 0}
-.brut-split{display:grid;grid-template-columns:1fr 1fr;border-bottom:2px solid var(--color-text-primary)}
-.brut-left{padding:1.5rem 2rem;border-right:2px solid var(--color-text-primary)}
-.brut-right{padding:1.5rem 2rem}
-.brut-stat-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-secondary)}
-.brut-stat-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--acc);margin-top:4px}
-.brut-desc{font-size:13px;line-height:1.7;color:var(--color-text-secondary);margin-top:.75rem}
-.brut-image{width:100%;height:150px;background:var(--color-background-secondary);border-bottom:2px solid var(--color-text-primary);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--color-text-secondary);letter-spacing:0.06em;text-transform:uppercase}
-.brut-footer{display:flex;align-items:stretch}
-.brut-tag-area{flex:1;padding:1rem 2rem;border-right:2px solid var(--color-text-primary);display:flex;align-items:center;flex-wrap:wrap;gap:6px}
-.brut-ft{font-family:'IBM Plex Mono',monospace;font-size:11px;border:1.5px solid var(--color-text-primary);padding:3px 8px;color:var(--color-text-secondary)}
-.brut-action{padding:1rem 1.75rem;display:flex;align-items:center;cursor:pointer;background:var(--acc);border:none}
-.brut-action-txt{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#fff}
+  .cbtn {
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: none;
+    background: none;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    transition: all 0.15s
+  }
 
-/* ══════════════════════════════════
-   PASTEL — soft, rounded, friendly
-═══════════════════════════════════ */
-.pastel-wrap{background:var(--color-background-primary);border-radius:20px;overflow:hidden;border:0.5px solid var(--color-border-tertiary)}
-.pastel-top{padding:2rem 2rem 1.5rem;display:flex;gap:1.5rem;align-items:flex-start}
-.pastel-icon{width:56px;height:56px;border-radius:16px;background:var(--acc-bg);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--acc);flex-shrink:0;border:1.5px solid var(--acc)}
-.pastel-title{font-family:'Nunito',sans-serif;font-size:24px;font-weight:700;color:var(--color-text-primary);line-height:1.2;margin-bottom:8px}
-.pastel-chips{display:flex;gap:6px;flex-wrap:wrap}
-.pastel-chip{font-family:'Nunito',sans-serif;font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--acc-bg);color:var(--acc-txt)}
-.pastel-image{margin:0 2rem;border-radius:14px;height:160px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--color-text-secondary);font-family:'Nunito',sans-serif}
-.pastel-body{padding:1.25rem 2rem 2rem}
-.pastel-desc{font-family:'Nunito',sans-serif;font-size:14px;line-height:1.75;color:var(--color-text-secondary);margin-bottom:1.25rem}
-.pastel-facts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
-.pastel-fact{background:var(--acc-bg);border-radius:12px;padding:12px 14px}
-.pastel-fact-label{font-family:'Nunito',sans-serif;font-size:11px;font-weight:600;color:var(--acc-txt);opacity:.7;margin-bottom:3px}
-.pastel-fact-val{font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--acc-txt)}
-.pastel-btn{width:100%;padding:12px;border-radius:12px;background:var(--acc);color:#fff;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+  .cbtn.active {
+    background: var(--color-text-primary);
+    color: var(--color-background-primary)
+  }
 
-/* ══════════════════════════════════
-   TERMINAL — mono, neon, retro
-═══════════════════════════════════ */
-.term-wrap{background:#0d1117;border-radius:10px;overflow:hidden;border:1px solid #30363d}
-.term-bar{background:#161b22;padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #30363d}
-.term-dot{width:12px;height:12px;border-radius:50%}
-.term-filename{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8b949e;margin-left:4px}
-.term-body{padding:1.5rem 2rem;font-family:'IBM Plex Mono',monospace}
-.term-prompt{color:#8b949e;font-size:13px;margin-bottom:.25rem}
-.term-cmd{color:var(--acc);font-size:14px;font-weight:500;margin-bottom:1.5rem}
-.term-block{margin-bottom:1.25rem}
-.term-key{font-size:11px;color:#8b949e;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px}
-.term-val{font-size:14px;color:#e6edf3}
-.term-title{font-size:20px;font-weight:500;color:#e6edf3;margin-bottom:.25rem}
-.term-sep{border:none;border-top:1px solid #21262d;margin:1rem 0}
-.term-desc{font-size:13px;color:#8b949e;line-height:1.75;margin-bottom:1.25rem}
-.term-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.5rem}
-.term-tag{font-size:11px;padding:3px 9px;border-radius:4px;border:1px solid var(--acc);color:var(--acc);background:rgba(0,0,0,0.3)}
-.term-image{border-radius:6px;height:130px;border:1px solid #30363d;background:#161b22;display:flex;align-items:center;justify-content:center;font-size:11px;color:#8b949e;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:1.5rem}
-.term-footer{display:flex;gap:10px;align-items:center}
-.term-btn{display:inline-flex;align-items:center;gap:6px;background:var(--acc);color:#000;padding:8px 16px;border-radius:5px;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;border:none;cursor:pointer}
-.term-btn-ghost{display:inline-flex;align-items:center;gap:6px;background:none;color:var(--acc);padding:8px 16px;border-radius:5px;font-family:'IBM Plex Mono',monospace;font-size:12px;border:1px solid var(--acc);cursor:pointer}
-.term-cursor{display:inline-block;width:8px;height:14px;background:var(--acc);vertical-align:-2px;animation:blink 1s step-end infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  .cbtn:hover:not(.active) {
+    background: var(--color-background-secondary)
+  }
+
+  .preview {
+    padding: 1.25rem;
+    min-height: 520px
+  }
+
+  .preview[data-palette="ocean"] {
+    --acc: #0ea5e9;
+    --acc-dim: #075985;
+    --acc-bg: #e0f2fe;
+    --acc-txt: #0c4a6e
+  }
+
+  .preview[data-palette="sunset"] {
+    --acc: #f97316;
+    --acc-dim: #9a3412;
+    --acc-bg: #fff7ed;
+    --acc-txt: #7c2d12
+  }
+
+  .preview[data-palette="forest"] {
+    --acc: #22c55e;
+    --acc-dim: #14532d;
+    --acc-bg: #f0fdf4;
+    --acc-txt: #14532d
+  }
+
+  .preview[data-palette="midnight"] {
+    --acc: #a78bfa;
+    --acc-dim: #4c1d95;
+    --acc-bg: #f5f3ff;
+    --acc-txt: #3b0764
+  }
+
+  .modern-wrap {
+    background: var(--color-background-primary);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 0.5px solid var(--color-border-tertiary)
+  }
+
+  .modern-hero {
+    background: var(--acc-bg);
+    padding: 2.5rem 2.5rem 2rem;
+    position: relative;
+    border-bottom: 0.5px solid var(--color-border-tertiary)
+  }
+
+  .modern-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-bottom: 1rem
+  }
+
+  .modern-badge i {
+    font-size: 13px;
+    color: var(--acc)
+  }
+
+  .modern-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--color-text-primary);
+    line-height: 1.15;
+    max-width: 480px
+  }
+
+  .modern-accent-word {
+    color: var(--acc)
+  }
+
+  .modern-meta {
+    display: flex;
+    gap: 10px;
+    margin-top: 1.25rem;
+    flex-wrap: wrap
+  }
+
+  .modern-pill {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--color-text-secondary)
+  }
+
+  .modern-body {
+    padding: 2rem 2.5rem;
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 2rem;
+    align-items: start
+  }
+
+  .modern-image {
+    width: 200px;
+    height: 130px;
+    border-radius: 10px;
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.06em
+  }
+
+  .modern-desc {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--color-text-secondary)
+  }
+
+  .modern-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 1rem
+  }
+
+  .modern-tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--acc-bg);
+    color: var(--acc-txt);
+    border: 0.5px solid var(--acc)
+  }
+
+  .modern-footer {
+    padding: 1.25rem 2.5rem;
+    border-top: 0.5px solid var(--color-border-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between
+  }
+
+  .modern-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--acc);
+    color: #fff;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer
+  }
+
+  .modern-link {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none
+  }
+
+  .brut-wrap {
+    background: var(--color-background-primary);
+    border-radius: 0;
+    border: 2px solid var(--color-text-primary);
+    overflow: hidden
+  }
+
+  .brut-top {
+    background: var(--color-text-primary);
+    padding: 2rem 2rem 1.75rem
+  }
+
+  .brut-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--acc);
+    margin-bottom: .75rem
+  }
+
+  .brut-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--color-background-primary);
+    letter-spacing: -0.03em
+  }
+
+  .brut-rule {
+    width: 40px;
+    height: 3px;
+    background: var(--acc);
+    margin: 1rem 0
+  }
+
+  .brut-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 2px solid var(--color-text-primary)
+  }
+
+  .brut-left {
+    padding: 1.5rem 2rem;
+    border-right: 2px solid var(--color-text-primary)
+  }
+
+  .brut-right {
+    padding: 1.5rem 2rem
+  }
+
+  .brut-stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary)
+  }
+
+  .brut-stat-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--acc);
+    margin-top: 4px
+  }
+
+  .brut-desc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+    margin-top: .75rem
+  }
+
+  .brut-image {
+    width: 100%;
+    height: 150px;
+    background: var(--color-background-secondary);
+    border-bottom: 2px solid var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase
+  }
+
+  .brut-footer {
+    display: flex;
+    align-items: stretch
+  }
+
+  .brut-tag-area {
+    flex: 1;
+    padding: 1rem 2rem;
+    border-right: 2px solid var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px
+  }
+
+  .brut-ft {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    border: 1.5px solid var(--color-text-primary);
+    padding: 3px 8px;
+    color: var(--color-text-secondary)
+  }
+
+  .brut-action {
+    padding: 1rem 1.75rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: var(--acc);
+    border: none
+  }
+
+  .brut-action-txt {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #fff
+  }
+
+  .pastel-wrap {
+    background: var(--color-background-primary);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 0.5px solid var(--color-border-tertiary)
+  }
+
+  .pastel-top {
+    padding: 2rem 2rem 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start
+  }
+
+  .pastel-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--acc-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    color: var(--acc);
+    flex-shrink: 0;
+    border: 1.5px solid var(--acc)
+  }
+
+  .pastel-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    margin-bottom: 8px
+  }
+
+  .pastel-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap
+  }
+
+  .pastel-chip {
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--acc-bg);
+    color: var(--acc-txt)
+  }
+
+  .pastel-image {
+    margin: 0 2rem;
+    border-radius: 14px;
+    height: 160px;
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    font-family: 'Nunito', sans-serif
+  }
+
+  .pastel-body {
+    padding: 1.25rem 2rem 2rem
+  }
+
+  .pastel-desc {
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--color-text-secondary);
+    margin-bottom: 1.25rem
+  }
+
+  .pastel-facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1.5rem
+  }
+
+  .pastel-fact {
+    background: var(--acc-bg);
+    border-radius: 12px;
+    padding: 12px 14px
+  }
+
+  .pastel-fact-label {
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--acc-txt);
+    opacity: .7;
+    margin-bottom: 3px
+  }
+
+  .pastel-fact-val {
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--acc-txt)
+  }
+
+  .pastel-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--acc);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px
+  }
+
+  .term-wrap {
+    background: #0d1117;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #30363d
+  }
+
+  .term-bar {
+    background: #161b22;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #30363d
+  }
+
+  .term-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%
+  }
+
+  .term-filename {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: #8b949e;
+    margin-left: 4px
+  }
+
+  .term-body {
+    padding: 1.5rem 2rem;
+    font-family: 'IBM Plex Mono', monospace
+  }
+
+  .term-prompt {
+    color: #8b949e;
+    font-size: 13px;
+    margin-bottom: .25rem
+  }
+
+  .term-cmd {
+    color: var(--acc);
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 1.5rem
+  }
+
+  .term-block {
+    margin-bottom: 1.25rem
+  }
+
+  .term-key {
+    font-size: 11px;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px
+  }
+
+  .term-val {
+    font-size: 14px;
+    color: #e6edf3
+  }
+
+  .term-title {
+    font-size: 20px;
+    font-weight: 500;
+    color: #e6edf3;
+    margin-bottom: .25rem
+  }
+
+  .term-sep {
+    border: none;
+    border-top: 1px solid #21262d;
+    margin: 1rem 0
+  }
+
+  .term-desc {
+    font-size: 13px;
+    color: #8b949e;
+    line-height: 1.75;
+    margin-bottom: 1.25rem
+  }
+
+  .term-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1.5rem
+  }
+
+  .term-tag {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 4px;
+    border: 1px solid var(--acc);
+    color: var(--acc);
+    background: rgba(0, 0, 0, 0.3)
+  }
+
+  .term-image {
+    border-radius: 6px;
+    height: 130px;
+    border: 1px solid #30363d;
+    background: #161b22;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #8b949e;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem
+  }
+
+  .term-footer {
+    display: flex;
+    gap: 10px;
+    align-items: center
+  }
+
+  .term-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--acc);
+    color: #000;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer
+  }
+
+  .term-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    color: var(--acc);
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    border: 1px solid var(--acc);
+    cursor: pointer
+  }
+
+  .term-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 14px;
+    background: var(--acc);
+    vertical-align: -2px;
+    animation: blink 1s step-end infinite
+  }
+
+  @keyframes blink {
+
+    0%,
+    100% {
+      opacity: 1
+    }
+
+    50% {
+      opacity: 0
+    }
+  }
 </style>
 
-<h2 class="sr-only">Project detail page templates matching your four website design themes: Modern, Brutalist, Pastel, and Terminal — each with four palette options.</h2>
+<h2 class="sr-only">Project detail page templates matching your four website design themes: Modern, Brutalist, Pastel,
+  and Terminal — each with four palette options.</h2>
 
 <div class="controls">
   <div class="ctrl-group">
@@ -133,14 +690,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--color-background-tertiary
         <div class="modern-badge"><i class="ti ti-building-hospital" aria-hidden="true"></i> Health Infrastructure</div>
         <h1 class="modern-title">Patient Record <span class="modern-accent-word">Management</span> System</h1>
         <div class="modern-meta">
-          <span class="modern-pill"><i class="ti ti-calendar" style="font-size:12px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>2023</span>
-          <span class="modern-pill"><i class="ti ti-check" style="font-size:12px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>Live in production</span>
+          <span class="modern-pill"><i class="ti ti-calendar"
+              style="font-size:12px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>2023</span>
+          <span class="modern-pill"><i class="ti ti-check" style="font-size:12px;vertical-align:-1px;margin-right:4px"
+              aria-hidden="true"></i>Live in production</span>
           <span class="modern-pill">Ministry of Health</span>
         </div>
       </div>
       <div class="modern-body">
         <div>
-          <p class="modern-desc">A centralised electronic health record platform deployed across 47 district hospitals. Clinicians access patient histories, prescribe digitally, and coordinate referrals — reducing duplication and improving outcomes for over 2 million patients.</p>
+          <p class="modern-desc">A centralised electronic health record platform deployed across 47 district hospitals.
+            Clinicians access patient histories, prescribe digitally, and coordinate referrals — reducing duplication
+            and improving outcomes for over 2 million patients.</p>
           <div class="modern-tags">
             <span class="modern-tag">EHR</span>
             <span class="modern-tag">Government</span>
@@ -151,8 +712,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--color-background-tertiary
         <div class="modern-image">project image</div>
       </div>
       <div class="modern-footer">
-        <button class="modern-link"><i class="ti ti-arrow-left" style="font-size:14px" aria-hidden="true"></i> All projects</button>
-        <button class="modern-btn">View case study <i class="ti ti-arrow-up-right" style="font-size:15px" aria-hidden="true"></i></button>
+        <button class="modern-link"><i class="ti ti-arrow-left" style="font-size:14px" aria-hidden="true"></i> All
+          projects</button>
+        <button class="modern-btn">View case study <i class="ti ti-arrow-up-right" style="font-size:15px"
+            aria-hidden="true"></i></button>
       </div>
     </div>
   </div>
@@ -171,14 +734,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--color-background-tertiary
           <div class="brut-stat-val">Ministry of Health</div>
           <div class="brut-stat-label" style="margin-top:1rem">Status</div>
           <div class="brut-stat-val">In Production</div>
-          <p class="brut-desc">Deployed across 47 district hospitals. Clinicians access patient histories, prescribe digitally, and coordinate referrals for 2M+ patients.</p>
+          <p class="brut-desc">Deployed across 47 district hospitals. Clinicians access patient histories, prescribe
+            digitally, and coordinate referrals for 2M+ patients.</p>
         </div>
         <div class="brut-right">
           <div class="brut-stat-label">Stack</div>
           <div class="brut-stat-val">Django · React</div>
           <div class="brut-stat-label" style="margin-top:1rem">Scale</div>
           <div class="brut-stat-val">47 hospitals</div>
-          <p class="brut-desc">Reduced record duplication by 94% and cut referral processing time from 3 days to under 4 hours.</p>
+          <p class="brut-desc">Reduced record duplication by 94% and cut referral processing time from 3 days to under 4
+            hours.</p>
         </div>
       </div>
       <div class="brut-image">project screenshot</div>
@@ -209,14 +774,28 @@ body{font-family:'DM Sans',sans-serif;background:var(--color-background-tertiary
       </div>
       <div class="pastel-image">project image</div>
       <div class="pastel-body">
-        <p class="pastel-desc">A centralised electronic health record platform deployed across 47 district hospitals — helping clinicians coordinate care and reducing record duplication for over 2 million patients.</p>
+        <p class="pastel-desc">A centralised electronic health record platform deployed across 47 district hospitals —
+          helping clinicians coordinate care and reducing record duplication for over 2 million patients.</p>
         <div class="pastel-facts">
-          <div class="pastel-fact"><div class="pastel-fact-label">Client</div><div class="pastel-fact-val">Ministry of Health</div></div>
-          <div class="pastel-fact"><div class="pastel-fact-label">Hospitals</div><div class="pastel-fact-val">47 districts</div></div>
-          <div class="pastel-fact"><div class="pastel-fact-label">Stack</div><div class="pastel-fact-val">Django · React</div></div>
-          <div class="pastel-fact"><div class="pastel-fact-label">Patients reached</div><div class="pastel-fact-val">2M+</div></div>
+          <div class="pastel-fact">
+            <div class="pastel-fact-label">Client</div>
+            <div class="pastel-fact-val">Ministry of Health</div>
+          </div>
+          <div class="pastel-fact">
+            <div class="pastel-fact-label">Hospitals</div>
+            <div class="pastel-fact-val">47 districts</div>
+          </div>
+          <div class="pastel-fact">
+            <div class="pastel-fact-label">Stack</div>
+            <div class="pastel-fact-val">Django · React</div>
+          </div>
+          <div class="pastel-fact">
+            <div class="pastel-fact-label">Patients reached</div>
+            <div class="pastel-fact-val">2M+</div>
+          </div>
         </div>
-        <button class="pastel-btn"><i class="ti ti-external-link" style="font-size:16px" aria-hidden="true"></i> View case study</button>
+        <button class="pastel-btn"><i class="ti ti-external-link" style="font-size:16px" aria-hidden="true"></i> View
+          case study</button>
       </div>
     </div>
   </div>
@@ -237,14 +816,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--color-background-tertiary
           <div class="term-title">Patient Record Management System</div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem">
-          <div><div class="term-key">category</div><div class="term-val">Health Infrastructure</div></div>
-          <div><div class="term-key">year</div><div class="term-val">2023</div></div>
-          <div><div class="term-key">status</div><div class="term-val" style="color:#27c93f">● live</div></div>
+          <div>
+            <div class="term-key">category</div>
+            <div class="term-val">Health Infrastructure</div>
+          </div>
+          <div>
+            <div class="term-key">year</div>
+            <div class="term-val">2023</div>
+          </div>
+          <div>
+            <div class="term-key">status</div>
+            <div class="term-val" style="color:#27c93f">● live</div>
+          </div>
         </div>
         <hr class="term-sep">
         <div class="term-image">project_screenshot.png</div>
         <div class="term-key">description</div>
-        <p class="term-desc">Centralised EHR platform across 47 district hospitals. Clinicians access histories, prescribe digitally, coordinate referrals — 2M+ patients, 94% duplication reduction.</p>
+        <p class="term-desc">Centralised EHR platform across 47 district hospitals. Clinicians access histories,
+          prescribe digitally, coordinate referrals — 2M+ patients, 94% duplication reduction.</p>
         <div class="term-tags">
           <span class="term-tag">ehr</span>
           <span class="term-tag">government</span>
@@ -253,8 +842,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--color-background-tertiary
           <span class="term-tag">postgresql</span>
         </div>
         <div class="term-footer">
-          <button class="term-btn"><i class="ti ti-external-link" style="font-size:14px" aria-hidden="true"></i> open case study</button>
-          <button class="term-btn-ghost"><i class="ti ti-copy" style="font-size:14px" aria-hidden="true"></i> copy link</button>
+          <button class="term-btn"><i class="ti ti-external-link" style="font-size:14px" aria-hidden="true"></i> open
+            case study</button>
+          <button class="term-btn-ghost"><i class="ti ti-copy" style="font-size:14px" aria-hidden="true"></i> copy
+            link</button>
         </div>
       </div>
     </div>
@@ -263,22 +854,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--color-background-tertiary
 </div>
 
 <script>
-var design = 'modern', palette = 'ocean';
+  var design = 'modern', palette = 'ocean';
 
-function setDesign(d) {
-  design = d;
-  document.querySelectorAll('.design-panel').forEach(el => el.style.display = 'none');
-  document.getElementById('d-' + d).style.display = 'block';
-  document.querySelectorAll('.ctrl-group')[0].querySelectorAll('.cbtn').forEach((b, i) => {
-    b.classList.toggle('active', ['modern','brutalist','pastel','terminal'][i] === d);
-  });
-}
+  function setDesign(d) {
+    design = d;
+    document.querySelectorAll('.design-panel').forEach(el => el.style.display = 'none');
+    document.getElementById('d-' + d).style.display = 'block';
+    document.querySelectorAll('.ctrl-group')[0].querySelectorAll('.cbtn').forEach((b, i) => {
+      b.classList.toggle('active', ['modern', 'brutalist', 'pastel', 'terminal'][i] === d);
+    });
+  }
 
-function setPalette(p) {
-  palette = p;
-  document.getElementById('preview').setAttribute('data-palette', p);
-  ['ocean','sunset','forest','midnight'].forEach(id => {
-    document.getElementById('p-' + id).classList.toggle('active', id === p);
-  });
-}
+  function setPalette(p) {
+    palette = p;
+    document.getElementById('preview').setAttribute('data-palette', p);
+    ['ocean', 'sunset', 'forest', 'midnight'].forEach(id => {
+      document.getElementById('p-' + id).classList.toggle('active', id === p);
+    });
+  }
 </script>
