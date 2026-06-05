@@ -36,6 +36,7 @@ import {
   servicesApi,
   mediaUrl,
 } from "@/lib/api";
+import { projectHref } from "@/lib/projectLinks";
 
 const container = {
   hidden: {},
@@ -71,7 +72,6 @@ const serviceIcons = [
 
 const Home = () => {
   const [expandedServices, setExpandedServices] = useState<Record<string, boolean>>({});
-  const [expandedProjects, setExpandedProjects] = useState<Record<number, boolean>>({});
 
   const { data: settings } = useQuery({
     queryKey: ["settings"],
@@ -138,10 +138,6 @@ const Home = () => {
 
   const toggleService = (id: string) => {
     setExpandedServices((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const toggleProject = (id: number) => {
-    setExpandedProjects((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   return (
@@ -402,64 +398,55 @@ const Home = () => {
                 key={p.id}
                 delay={i * 0.08}
               >
-                <motion.div
-                  whileHover={{
-                    y: -6,
-                    transition: {
-                      duration: 0.25,
-                    },
-                  }}
-                  className="glass-card-hover group cursor-pointer rounded-xl p-6"
+                <Link
+                  to={projectHref(p)}
+                  className="block h-full"
+                  aria-label={`Open ${p.title} project details`}
                 >
-                  <div className="mb-3 h-32 overflow-hidden rounded-lg bg-gradient-to-br from-primary/10 via-secondary to-primary/5 flex items-center justify-center">
-                    {p.image_url ? (
-                      <img
-                        src={mediaUrl(p.image_url)}
-                        alt={p.title}
-                        className="h-full w-full object-contain"
-                      />
-                    ) : (
-                      <Code
-                        size={32}
-                        className="text-primary/30"
-                      />
-                    )}
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
-                      {p.category}
-                    </span>
-
-                    <ArrowUpRight
-                      size={14}
-                      className="text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary"
-                    />
-                  </div>
-
-                  <h3 className="mt-3 font-heading text-lg font-semibold text-foreground">
-                    {p.title}
-                  </h3>
-
-                  <p
-                    className={`mt-2 text-sm leading-relaxed text-muted-foreground ${
-                      expandedProjects[p.id] ? "" : "line-clamp-2"
-                    }`}
-                  >
-                    {p.description}
-                  </p>
-
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleProject(p.id);
+                  <motion.div
+                    whileHover={{
+                      y: -6,
+                      transition: {
+                        duration: 0.25,
+                      },
                     }}
-                    className="mt-4 inline-flex w-fit items-center gap-1 rounded-full border border-primary/30 px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+                    className="glass-card-hover group h-full cursor-pointer rounded-xl p-6"
                   >
-                    {expandedProjects[p.id] ? "Read less" : "Read more"}
-                  </button>
-                </motion.div>
+                    <div className="mb-3 flex h-32 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-primary/10 via-secondary to-primary/5">
+                      {p.image_url ? (
+                        <img
+                          src={mediaUrl(p.image_url)}
+                          alt={p.title}
+                          className="h-full w-full object-contain"
+                        />
+                      ) : (
+                        <Code
+                          size={32}
+                          className="text-primary/30"
+                        />
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                        {p.category}
+                      </span>
+
+                      <ArrowUpRight
+                        size={14}
+                        className="text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary"
+                      />
+                    </div>
+
+                    <h3 className="mt-3 font-heading text-lg font-semibold text-foreground">
+                      {p.title}
+                    </h3>
+
+                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                      {p.description}
+                    </p>
+                  </motion.div>
+                </Link>
               </AnimatedSection>
             ))}
           </div>

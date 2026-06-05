@@ -3,10 +3,10 @@ import AnimatedSection from "@/components/AnimatedSection";
 import GradientOrbs from "@/components/GradientOrbs";
 import { projects as fallbackProjects } from "@/lib/data";
 import { mediaUrl, projectsApi } from "@/lib/api";
+import { projectHref } from "@/lib/projectLinks";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight, Code } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 
 const Work = () => {
   const { data: liveProjects } = useQuery({
@@ -14,21 +14,11 @@ const Work = () => {
     queryFn: projectsApi.getAll,
     retry: false,
   });
-  console.log(liveProjects, "liveproject");
 
   const projects =
     liveProjects && liveProjects.length > 0
       ? liveProjects
       : fallbackProjects;
-
-  const [expanded, setExpanded] = useState<Record<number, boolean>>({});
-
-  const toggleExpand = (id: number) => {
-    setExpanded((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
 
   return (
     <Layout>
@@ -60,8 +50,9 @@ const Work = () => {
           {/* PROJECT LIST */}
           <div className="mt-10 flex flex-col gap-4">
             {projects?.map((p, i) => (
-              <div
+              <Link
                 key={p.id}
+                to={projectHref(p)}
                 className="
     glass-card-hover group
     flex flex-col sm:flex-row
@@ -69,6 +60,7 @@ const Work = () => {
     rounded-xl p-4 sm:p-6
     cursor-pointer w-full
   "
+                aria-label={`Open ${p.title} project details`}
               >
                 {/* IMAGE - TOP ON MOBILE */}
                 <div className="flex h-40 w-full sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 overflow-hidden">
@@ -108,23 +100,10 @@ const Work = () => {
                   </h3>
 
                   <p
-                    className={`mt-1 text-sm text-muted-foreground leading-relaxed break-words transition-all ${expanded[p.id]
-                      ? "max-w-2xl"
-                      : "line-clamp-2 max-w-2xl"
-                      }`}
+                    className="mt-1 line-clamp-2 max-w-2xl text-sm leading-relaxed text-muted-foreground break-words"
                   >
                     {p.description}
                   </p>
-
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleExpand(p.id);
-                    }}
-                    className="mt-2 text-xs font-medium text-primary hover:underline"
-                  >
-                    {expanded[p.id] ? "Read less" : "Read more"}
-                  </button>
                 </div>
 
                 {/* ICON */}
@@ -132,7 +111,7 @@ const Work = () => {
                   size={18}
                   className="mt-2 shrink-0 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-primary"
                 />
-              </div>
+              </Link>
             ))}
           </div>
 
