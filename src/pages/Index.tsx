@@ -301,7 +301,141 @@ const Home = () => {
         </div>
       </section>
 
+
       {/* Services */}
+      <section className="relative section-padding !py-16 overflow-hidden lg:!py-20">
+        <div className="absolute inset-0 grid-bg opacity-20" />
+
+        <div className="container-tight relative">
+          <AnimatedSection>
+            <p className="text-sm font-medium uppercase tracking-widest text-primary">
+              {s.services_eyebrow || "What we do"}
+            </p>
+
+            <h2 className="mt-3 max-w-lg font-heading text-3xl font-bold text-foreground md:text-4xl">
+              {s.services_title ||
+                "Services built around outcomes, not checklists."}
+            </h2>
+
+            <p className="mt-4 max-w-xl text-muted-foreground">
+              {s.services_description ||
+                "From early-stage product strategy to long-running platform engineering."}
+            </p>
+          </AnimatedSection>
+
+          <motion.div
+            variants={container}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+          >
+            {servicesList.map((sv, i) => {
+              const Icon =
+                serviceIcons[i % serviceIcons.length] || Code;
+
+              const serviceId = String(sv.id ?? i);
+
+              return (
+                <motion.div
+                  key={sv.id ?? i}
+                  whileHover={{
+                    y: -6,
+                    transition: {
+                      duration: 0.25,
+                    },
+                  }}
+                  className="
+              glass-card-hover
+              group
+              rounded-xl
+              p-6
+              cursor-pointer
+              h-full
+            "
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="
+                  flex h-10 w-10 items-center justify-center rounded-lg
+                  bg-primary/10
+                  transition-all duration-300
+                  group-hover:bg-primary/20
+                  group-hover:scale-110
+                "
+                    >
+                      <Icon
+                        size={18}
+                        className="
+                    text-primary
+                    transition-transform duration-300
+                    group-hover:rotate-6
+                  "
+                      />
+                    </div>
+
+                    <span
+                      className="
+                  text-xs font-bold text-primary/60
+                  transition-colors duration-300
+                  group-hover:text-primary
+                "
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+
+                  <h3
+                    className="
+                mt-4 font-heading text-lg font-semibold text-foreground
+                transition-colors duration-300
+                group-hover:text-primary
+              "
+                  >
+                    {sv.title}
+                  </h3>
+
+                  <p
+                    className={`mt-2 text-sm leading-relaxed text-muted-foreground ${expandedServices[serviceId]
+                      ? ""
+                      : "line-clamp-2"
+                      }`}
+                  >
+                    {sv.description}
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => toggleService(serviceId)}
+                    className="
+                mt-3 inline-flex items-center gap-1
+                text-xs font-medium text-primary
+                transition-all duration-300
+                hover:underline
+              "
+                  >
+                    {expandedServices[serviceId]
+                      ? "Read less"
+                      : "Read more"}
+
+                    <ArrowRight
+                      size={12}
+                      className="
+                  transition-transform duration-300
+                  group-hover:translate-x-1
+                "
+                    />
+                  </button>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </div>
+      </section>
+
+
+
+      {/* Services
       <section className="relative section-padding !py-16 overflow-hidden lg:!py-20">
         <div className="absolute inset-0 grid-bg opacity-20" />
 
@@ -372,7 +506,9 @@ const Home = () => {
             })}
           </motion.div>
         </div>
-      </section>
+      </section> */}
+
+
 
       {/* Selected Work */}
       <section className="section-padding !py-16 lg:!py-20">
@@ -462,7 +598,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Testimonials
       {testimonialsList.length > 0 && (
         <section className="relative section-padding !py-16 overflow-hidden lg:!py-20">
           <div className="absolute inset-0 grid-bg opacity-20" />
@@ -496,6 +632,87 @@ const Home = () => {
                   </div>
 
                   <p className="mt-5 flex-1 text-sm leading-relaxed text-muted-foreground">
+                    "{testimonial.text}"
+                  </p>
+
+                  <div className="mt-6 border-t border-border/60 pt-4">
+                    <h3 className="font-heading text-base font-semibold text-foreground">
+                      {testimonial.name}
+                    </h3>
+
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                      {testimonial.role}
+                    </p>
+                  </div>
+                </motion.article>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+      )} */}
+
+      {/* Testimonials */}
+      {testimonialsList.length > 0 && (
+        <section className="relative section-padding !py-16 overflow-hidden lg:!py-20">
+          <div className="absolute inset-0 grid-bg opacity-20" />
+
+          <div className="container-tight relative">
+            <AnimatedSection>
+              <p className="text-sm font-medium uppercase tracking-widest text-primary">
+                Client testimonials
+              </p>
+
+              <h2 className="mt-3 max-w-2xl font-heading text-3xl font-bold text-foreground md:text-4xl">
+                What partners say after shipping with Citizen Infotech.
+              </h2>
+            </AnimatedSection>
+
+            <motion.div
+              variants={container}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              className="mt-8 grid gap-4 md:grid-cols-3"
+            >
+              {testimonialsList.slice(0, 3).map((testimonial, i) => (
+                <motion.article
+                  key={`${testimonial.name}-${i}`}
+                  variants={item}
+                  whileHover={{
+                    y: -6,
+                    transition: { duration: 0.25 },
+                  }}
+                  className="
+              glass-card-hover
+              group
+              flex h-full flex-col
+              rounded-xl p-6
+              transition-all duration-300
+              hover:shadow-2xl
+              hover:border-primary/30
+              cursor-pointer
+            "
+                >
+                  <div
+                    className="
+                flex h-10 w-10 items-center justify-center rounded-lg
+                bg-primary/10
+                transition-all duration-300
+                group-hover:bg-primary/20
+                group-hover:scale-110
+              "
+                  >
+                    <Quote
+                      size={18}
+                      className="
+                  text-primary
+                  transition-transform duration-300
+                  group-hover:rotate-6
+                "
+                    />
+                  </div>
+
+                  <p className="mt-5 flex-1 text-sm leading-relaxed text-muted-foreground transition-colors group-hover:text-foreground/90">
                     "{testimonial.text}"
                   </p>
 
