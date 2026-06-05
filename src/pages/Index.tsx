@@ -335,17 +335,13 @@ const Home = () => {
               const serviceId = String(sv.id ?? i);
 
               return (
-                <motion.div
+                <div
                   key={sv.id ?? i}
-                  variants={item}
                   className="glass-card-hover group rounded-xl p-6"
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
-                      <Icon
-                        size={18}
-                        className="text-primary"
-                      />
+                      <Icon size={18} className="text-primary" />
                     </div>
 
                     <span className="text-xs font-bold text-primary/60">
@@ -358,9 +354,8 @@ const Home = () => {
                   </h3>
 
                   <p
-                    className={`mt-2 text-sm leading-relaxed text-muted-foreground ${
-                      expandedServices[serviceId] ? "" : "line-clamp-2"
-                    }`}
+                    className={`mt-2 text-sm leading-relaxed text-muted-foreground ${expandedServices[serviceId] ? "" : "line-clamp-2"
+                      }`}
                   >
                     {sv.description}
                   </p>
@@ -372,7 +367,7 @@ const Home = () => {
                   >
                     {expandedServices[serviceId] ? "Read less" : "Read more"}
                   </button>
-                </motion.div>
+                </div>
               );
             })}
           </motion.div>
