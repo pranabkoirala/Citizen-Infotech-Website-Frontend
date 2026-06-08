@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 
 import { lazy, Suspense } from "react";
->>>>>>> 0d65883ef49b0826ce4dc21a50fb08fbc4eaaeb6
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
