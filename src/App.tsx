@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import AdminDepartment from "./pages/admin/AdminDepartment";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Work from "./pages/Work";
@@ -61,6 +62,7 @@ const App = () => (
                 <Route path="applications" element={<AdminApplications />} />
                 <Route path="pages" element={<AdminPages />} />
                 <Route path="settings" element={<AdminSettings />} />
+                <Route path="departments" element={<AdminDepartment />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

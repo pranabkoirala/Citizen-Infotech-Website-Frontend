@@ -275,12 +275,12 @@ const Home = () => {
                 />
               </Link>
 
-              <Link
+              {/* <Link
                 to="/work"
                 className="inline-flex items-center gap-2 rounded-lg border border-border px-6 py-3 font-medium text-foreground transition-all hover:border-primary/40 hover:bg-primary/5"
               >
                 {s.hero_cta_secondary || "See our work"}
-              </Link>
+              </Link> */}
             </motion.div>
           </motion.div>
         </div>

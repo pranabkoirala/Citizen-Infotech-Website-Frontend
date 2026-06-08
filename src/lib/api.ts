@@ -108,6 +108,8 @@ export interface TeamMember {
   bio?: string;
   order_index: number;
   img?: string;
+  department_id?: number | null;
+  department?: Department;
 }
 
 export interface Project {
@@ -128,6 +130,12 @@ export interface Service {
   icon?: string;
   order_index?: number;
   show_on_home?: boolean;
+}
+
+export interface Department {
+  id: number;
+  name: string;
+  order_index: number;
 }
 
 export interface SiteSettings {
@@ -435,5 +443,41 @@ export const seedApi = {
       url: "/admin/seed-content",
       method: "POST",
       data: { mode },
+    }),
+};
+
+//--- Department=---
+// ---- Departments ----
+export const departmentsApi = {
+  getAll: () =>
+    request<Department[]>({
+      url: "/departments/",
+    }),
+
+  create: (data: Omit<Department, "id">) =>
+    request<Department>({
+      url: "/departments/",
+      method: "POST",
+      data,
+    }),
+
+  update: (id: number, data: Partial<Department>) =>
+    request<Department>({
+      url: `/departments/${id}`,
+      method: "PUT",
+      data,
+    }),
+
+  delete: (id: number) =>
+    request<void>({
+      url: `/departments/${id}`,
+      method: "DELETE",
+    }),
+
+  reorder: (items: { id: number; order_index: number }[]) =>
+    request<{ message: string }>({
+      url: "/departments/reorder",
+      method: "PUT",
+      data: items,
     }),
 };

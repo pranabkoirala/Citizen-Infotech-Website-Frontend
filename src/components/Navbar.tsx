@@ -10,7 +10,7 @@ const links = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
   { to: "/work", label: "Work" },
-  { to: "/inside", label: "Life at citizen infotech" },
+  { to: "/inside", label: "Life at Citizen Infotech" },
   { to: "/team", label: "Team" },
   { to: "/careers", label: "Careers" },
 ];

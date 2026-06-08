@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { messagesApi } from "@/lib/api";
 import ThemeSwitcher from "./ThemeSwitcher";
+import { Building2 } from "lucide-react";
 
 const navItems = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -17,6 +18,7 @@ const navItems = [
   { to: "/admin/applications", label: "Applications", icon: FileText },
   { to: "/admin/pages", label: "Page Editor", icon: Edit },
   { to: "/admin/settings", label: "Theme & Settings", icon: Settings },
+  { to: "/admin/departments", label: "Departments", icon: Building2 },
 ];
 
 const AdminLayout = () => {
@@ -46,9 +48,8 @@ const AdminLayout = () => {
               <Link
                 key={n.to}
                 to={n.to}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
-                  active ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                }`}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${active ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
               >
                 <n.icon size={16} />
                 <span className="flex-1">{n.label}</span>

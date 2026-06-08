@@ -4,13 +4,13 @@ import GradientOrbs from "@/components/GradientOrbs";
 import { pagesApi } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { ArrowRight, Lightbulb, ShieldCheck, Users, } from "lucide-react";
+import { ArrowRight, Lightbulb, Users, ShieldCheck} from "lucide-react";
 import { motion } from "framer-motion";
 
 const values = [
   {
     title: "Purposeful innovation",
-    desc: "We use technology with clear intent, solving real problems, improving workflows, and creating systems that make everyday work easier.",
+    desc: "We use technology with clear intent of solving real problems, improving workflows, and creating systems that make everyday work easier.",
     icon: Lightbulb,
   },
   {
@@ -24,10 +24,11 @@ const values = [
     icon: ShieldCheck,
   },
 ];
+
 const milestones = [
   { year: "2012", text: "Founded in Kathmandu with a focus on IT consulting" },
   { year: "2016", text: "Expanded into healthcare technology solutions" },
-  { year: "2020", text: "Launched AI-powered CDSS and EMR system" },
+  { year: "2020", text: "Launched AI-powered CDSS and EHR/EMR systems" },
   { year: "2024", text: "Serving 80+ clients across multiple sectors" },
 ];
 
