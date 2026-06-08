@@ -80,10 +80,20 @@ apiClient.interceptors.response.use(
 );
 
 async function request<T>(config: AxiosRequestConfig): Promise<T> {
-  const res = await apiClient.request<T>(config);
+  const isFormData = config.data instanceof FormData;
+
+  const res = await apiClient.request<T>({
+    ...config,
+    headers: {
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
+      ...config.headers,
+    },
+  });
+
   if (res.status === 204) return undefined as T;
   return res.data;
 }
+
 
 // ---- Types ----
 export interface User {
@@ -108,10 +118,13 @@ export interface TeamMember {
   bio?: string;
   order_index: number;
   img?: string;
+  department_id?: number | null;
+  department?: Department;
 }
 
 export interface Project {
   id: number;
+  slug?: string | null;
   title: string;
   category: string;
   year: string;
@@ -119,6 +132,14 @@ export interface Project {
   image_url?: string;
   order_index?: number;
   visible_on_home?: boolean;
+  detail_content?: string;
+  detail_design?: "modern" | "brutalist" | "pastel" | "terminal";
+  detail_palette?: "ocean" | "sunset" | "forest" | "midnight";
+  client?: string | null;
+  status?: string | null;
+  tech_stack?: string | null;
+  impact_summary?: string | null;
+  external_url?: string | null;
 }
 
 export interface Service {
@@ -128,6 +149,12 @@ export interface Service {
   icon?: string;
   order_index?: number;
   show_on_home?: boolean;
+}
+
+export interface Department {
+  id: number;
+  name: string;
+  order_index: number;
 }
 
 export interface SiteSettings {
@@ -309,6 +336,8 @@ type ProjectPayload = Omit<Project, "id"> | FormData;
 
 export const projectsApi = {
   getAll: () => request<Project[]>({ url: "/projects/" }),
+  getBySlug: (slugOrId: string | number) =>
+    request<Project>({ url: `/projects/${slugOrId}` }),
   create: (data: ProjectPayload) =>
     request<Project>({
       url: "/projects/",
@@ -322,6 +351,12 @@ export const projectsApi = {
       method: "PUT",
       data,
       headers: data instanceof FormData ? { "Content-Type": "multipart/form-data" } : undefined,
+    }),
+  uploadImage: (data: FormData) =>
+    request<{ url: string }>({
+      url: "/projects/upload-image",
+      method: "POST",
+      data,
     }),
   reorder: (items: { id: number; order_index: number }[]) =>
     request<{ message: string }>({
@@ -435,5 +470,41 @@ export const seedApi = {
       url: "/admin/seed-content",
       method: "POST",
       data: { mode },
+    }),
+};
+
+//--- Department=---
+// ---- Departments ----
+export const departmentsApi = {
+  getAll: () =>
+    request<Department[]>({
+      url: "/departments/",
+    }),
+
+  create: (data: Omit<Department, "id">) =>
+    request<Department>({
+      url: "/departments/",
+      method: "POST",
+      data,
+    }),
+
+  update: (id: number, data: Partial<Department>) =>
+    request<Department>({
+      url: `/departments/${id}`,
+      method: "PUT",
+      data,
+    }),
+
+  delete: (id: number) =>
+    request<void>({
+      url: `/departments/${id}`,
+      method: "DELETE",
+    }),
+
+  reorder: (items: { id: number; order_index: number }[]) =>
+    request<{ message: string }>({
+      url: "/departments/reorder",
+      method: "PUT",
+      data: items,
     }),
 };
