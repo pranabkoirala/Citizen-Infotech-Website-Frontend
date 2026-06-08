@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Users, Briefcase, FileText, Mail, Edit, ArrowLeft, LogOut, Settings, Home, Sparkles, Wrench, Images } from "lucide-react";
+import { LayoutDashboard, Users, Briefcase, FileText, Mail, Edit, ArrowLeft, LogOut, Settings, Home, Sparkles, Wrench, Images, FilePenLine } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { messagesApi } from "@/lib/api";
@@ -11,6 +11,7 @@ const navItems = [
   { to: "/admin/messages", label: "Messages", icon: Mail },
   { to: "/admin/home", label: "Home Content", icon: Home },
   { to: "/admin/works", label: "Works", icon: Sparkles },
+  { to: "/admin/project-details", label: "Project Details", icon: FilePenLine },
   { to: "/admin/services", label: "What We Do", icon: Wrench },
   { to: "/admin/inside", label: "Life at citizen infotech", icon: Images },
   { to: "/admin/team", label: "Team", icon: Users },
@@ -35,7 +36,7 @@ const AdminLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <aside className="fixed left-0 top-0 z-40 flex h-full w-56 flex-col border-r border-border bg-card">
+      <aside className="fixed left-0 top-0 z-40 flex h-full w-56 flex-col overflow-y-auto border-r border-border bg-card">
         <div className="flex h-16 items-center gap-2 border-b border-border px-5">
           <Link to="/" className="text-muted-foreground hover:text-primary"><ArrowLeft size={16} /></Link>
           <span className="font-heading text-sm font-bold text-foreground">Admin Panel</span>

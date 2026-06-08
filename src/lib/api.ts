@@ -80,10 +80,20 @@ apiClient.interceptors.response.use(
 );
 
 async function request<T>(config: AxiosRequestConfig): Promise<T> {
-  const res = await apiClient.request<T>(config);
+  const isFormData = config.data instanceof FormData;
+
+  const res = await apiClient.request<T>({
+    ...config,
+    headers: {
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
+      ...config.headers,
+    },
+  });
+
   if (res.status === 204) return undefined as T;
   return res.data;
 }
+
 
 // ---- Types ----
 export interface User {
@@ -114,6 +124,7 @@ export interface TeamMember {
 
 export interface Project {
   id: number;
+  slug?: string | null;
   title: string;
   category: string;
   year: string;
@@ -121,6 +132,14 @@ export interface Project {
   image_url?: string;
   order_index?: number;
   visible_on_home?: boolean;
+  detail_content?: string;
+  detail_design?: "modern" | "brutalist" | "pastel" | "terminal";
+  detail_palette?: "ocean" | "sunset" | "forest" | "midnight";
+  client?: string | null;
+  status?: string | null;
+  tech_stack?: string | null;
+  impact_summary?: string | null;
+  external_url?: string | null;
 }
 
 export interface Service {
@@ -317,6 +336,8 @@ type ProjectPayload = Omit<Project, "id"> | FormData;
 
 export const projectsApi = {
   getAll: () => request<Project[]>({ url: "/projects/" }),
+  getBySlug: (slugOrId: string | number) =>
+    request<Project>({ url: `/projects/${slugOrId}` }),
   create: (data: ProjectPayload) =>
     request<Project>({
       url: "/projects/",
@@ -330,6 +351,12 @@ export const projectsApi = {
       method: "PUT",
       data,
       headers: data instanceof FormData ? { "Content-Type": "multipart/form-data" } : undefined,
+    }),
+  uploadImage: (data: FormData) =>
+    request<{ url: string }>({
+      url: "/projects/upload-image",
+      method: "POST",
+      data,
     }),
   reorder: (items: { id: number; order_index: number }[]) =>
     request<{ message: string }>({
