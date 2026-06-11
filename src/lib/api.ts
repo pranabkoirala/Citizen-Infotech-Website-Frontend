@@ -24,13 +24,21 @@ export const mediaUrl = (url?: string | null) => {
   return `${BASE_URL}${url.startsWith("/") ? url : `/${url}`}`;
 };
 
-// ---- Auth token storage ----
-const TOKEN_KEY = "auth_token";
+// ---- Auth token storage (access + refresh) ----
+const ACCESS_KEY = "auth_token";
+const REFRESH_KEY = "refresh_token";
 
 export const tokenStore = {
-  get: () => localStorage.getItem(TOKEN_KEY),
-  set: (t: string) => localStorage.setItem(TOKEN_KEY, t),
-  clear: () => localStorage.removeItem(TOKEN_KEY),
+  getAccess: () => localStorage.getItem(ACCESS_KEY),
+  getRefresh: () => localStorage.getItem(REFRESH_KEY),
+  setTokens: (access: string, refresh?: string | null) => {
+    if (access) localStorage.setItem(ACCESS_KEY, access);
+    if (refresh) localStorage.setItem(REFRESH_KEY, refresh);
+  },
+  clear: () => {
+    localStorage.removeItem(ACCESS_KEY);
+    localStorage.removeItem(REFRESH_KEY);
+  },
 };
 
 export const apiClient = axios.create({
@@ -41,8 +49,9 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-  const token = tokenStore.get();
+  const token = tokenStore.getAccess?.() ?? tokenStore.get?.();
   if (token) {
+    config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -50,8 +59,36 @@ apiClient.interceptors.request.use((config) => {
 
 apiClient.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
+  async (error) => {
+    const originalRequest = error.config;
+    const status = error.response?.status;
+
+    // Try refresh flow on first 401
+    if (status === 401 && !originalRequest?._retry) {
+      originalRequest._retry = true;
+      const refresh = tokenStore.getRefresh?.();
+      if (refresh) {
+        try {
+          const resp = await axios.post(
+            `${BASE_URL}/auth/refresh`,
+            { refresh_token: refresh },
+            { headers: { "Content-Type": "application/json" } }
+          );
+
+          const newAccess = resp.data?.access_token;
+          const newRefresh = resp.data?.refresh_token;
+          if (newAccess) {
+            tokenStore.setTokens(newAccess, newRefresh);
+            // set Authorization for the original request and retry
+            originalRequest.headers = originalRequest.headers || {};
+            originalRequest.headers.Authorization = `Bearer ${newAccess}`;
+            return apiClient.request(originalRequest);
+          }
+        } catch (refreshErr) {
+          tokenStore.clear();
+          return Promise.reject(new Error("Unauthorized"));
+        }
+      }
       tokenStore.clear();
       return Promise.reject(new Error("Unauthorized"));
     }
@@ -229,12 +266,20 @@ export interface InsideMedia {
 
 // ---- Auth ----
 export const authApi = {
-  login: (email: string, password: string) =>
-    request<{ access_token?: string; error?: string }>({
+  login: async (email: string, password: string) => {
+    const res = await request<{ access_token?: string; refresh_token?: string; error?: string }>({
       url: "/auth/login",
       method: "POST",
       data: { email, password },
-    }),
+    });
+    const access = res?.access_token;
+    const refresh = res?.refresh_token;
+    if (access) tokenStore.setTokens(access, refresh);
+    return res;
+  },
+  logout: () => {
+    tokenStore.clear();
+  },
 };
 
 // ---- Users ----

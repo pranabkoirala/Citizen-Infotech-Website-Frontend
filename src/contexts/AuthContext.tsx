@@ -11,10 +11,10 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>(() => tokenStore.get());
+  const [token, setToken] = useState<string | null>(() => tokenStore.getAccess?.() || null);
 
   useEffect(() => {
-    const onStorage = () => setToken(tokenStore.get());
+    const onStorage = () => setToken(tokenStore.getAccess?.() || null);
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, []);
@@ -22,12 +22,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string) => {
     try {
       const res = await authApi.login(email, password);
-      if (res.access_token) {
-        tokenStore.set(res.access_token);
-        setToken(res.access_token);
+      const access = res?.access_token || tokenStore.getAccess?.();
+      if (access) {
+        setToken(access);
         return { ok: true };
       }
-      return { ok: false, error: res.error || "Invalid credentials" };
+      return { ok: false, error: res?.error || "Invalid credentials" };
     } catch (e) {
       return { ok: false, error: e instanceof Error ? e.message : "Login failed" };
     }
