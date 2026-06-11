@@ -85,69 +85,77 @@ const SortableProject = ({
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center gap-4 rounded-lg border border-border bg-card p-4 hover:shadow-lg transition-shadow"
+      className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 rounded-lg border border-border bg-card p-3 sm:p-4 hover:shadow-lg transition-shadow"
     >
-      <button
-        {...attributes}
-        {...listeners}
-        className="cursor-grab text-muted-foreground hover:text-foreground"
-      >
-        <GripVertical size={16} />
-      </button>
+      <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+        <button
+          {...attributes}
+          {...listeners}
+          className="cursor-grab text-muted-foreground hover:text-foreground shrink-0"
+        >
+          <GripVertical size={16} />
+        </button>
 
-      <div className="flex h-12 w-16 items-center justify-center rounded-md bg-secondary overflow-hidden">
-        {project.image_url ? (
-          <img
-            src={mediaUrl(project.image_url)}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <ImageIcon size={16} className="text-muted-foreground" />
-        )}
-      </div>
-
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <p className="text-sm font-semibold text-foreground truncate">
-            {project.title}
-          </p>
-          <span className="text-[10px] px-2 py-0.5 rounded bg-secondary text-muted-foreground">
-            {project.category}
-          </span>
-          <span className="text-[10px] text-muted-foreground">
-            {project.year}
-          </span>
+        <div className="flex h-10 w-12 sm:h-12 sm:w-16 shrink-0 items-center justify-center rounded-md bg-secondary overflow-hidden">
+          {project.image_url ? (
+            <img
+              src={mediaUrl(project.image_url)}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <ImageIcon size={16} className="text-muted-foreground" />
+          )}
         </div>
 
-        <p className="text-xs text-muted-foreground line-clamp-1">
-          {project.description}
-        </p>
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <p className="text-sm font-semibold text-foreground truncate max-w-[150px] sm:max-w-none">
+              {project.title}
+            </p>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-muted-foreground shrink-0">
+              {project.category}
+            </span>
+            <span className="text-[10px] text-muted-foreground shrink-0">
+              {project.year}
+            </span>
+          </div>
+
+          <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
+            {project.description}
+          </p>
+        </div>
       </div>
 
-      <button
-        onClick={onToggleHome}
-        className="p-1.5 rounded hover:bg-secondary"
-      >
-        {project.visible_on_home ? (
-          <Eye size={14} className="text-primary" />
-        ) : (
-          <EyeOff size={14} />
-        )}
-      </button>
+      <div className="flex items-center justify-end gap-2 border-t border-border/50 pt-2 sm:border-0 sm:pt-0 shrink-0">
+        <span className="text-[11px] text-muted-foreground sm:hidden mr-auto">Actions:</span>
+        <button
+          onClick={onToggleHome}
+          className="p-1.5 rounded hover:bg-secondary text-muted-foreground"
+          title="Toggle visible on home"
+        >
+          {project.visible_on_home ? (
+            <Eye size={14} className="text-primary" />
+          ) : (
+            <EyeOff size={14} />
+          )}
+        </button>
 
-      <button
-        onClick={onEdit}
-        className="p-1.5 rounded hover:bg-secondary"
-      >
-        <Pencil size={14} />
-      </button>
+        <button
+          onClick={onEdit}
+          className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground"
+          title="Edit"
+        >
+          <Pencil size={14} />
+        </button>
 
-      <button
-        onClick={onDelete}
-        className="p-1.5 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
-      >
-        <Trash2 size={14} />
-      </button>
+        <button
+          onClick={onDelete}
+          className="p-1.5 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+          title="Delete"
+        >
+          <Trash2 size={14} />
+        </button>
+      </div>
     </div>
   );
 };
@@ -258,14 +266,14 @@ const AdminWorks = () => {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
         <h1 className="text-2xl font-bold text-foreground">
           Works / Projects
         </h1>
 
         <button
           onClick={openAdd}
-          className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-primary-foreground"
+          className="flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-primary-foreground"
         >
           <Plus size={16} /> Add work
         </button>

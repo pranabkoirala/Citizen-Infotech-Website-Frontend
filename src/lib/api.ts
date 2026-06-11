@@ -49,9 +49,8 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-  const token = tokenStore.getAccess?.() ?? tokenStore.get?.();
-  if (token) {
-    config.headers = config.headers || {};
+  const token = tokenStore.getAccess();
+  if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;

@@ -1658,3 +1658,16 @@
   content: "> ";
   opacity: 0.5;
 }
+
+/* Fix CKEditor and admin rich editor stretching on mobile viewports */
+.admin-rich-editor .ck.ck-editor {
+  max-width: 100% !important;
+}
+.admin-rich-editor .ck.ck-editor__main {
+  max-width: 100% !important;
+  overflow: hidden;
+}
+.admin-rich-editor .ck.ck-toolbar {
+  flex-wrap: wrap !important;
+  max-width: 100% !important;
+}

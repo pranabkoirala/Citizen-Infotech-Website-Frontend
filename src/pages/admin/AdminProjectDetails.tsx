@@ -222,7 +222,7 @@ const AdminProjectDetails = () => {
           {isLoading && <Loader2 size={16} className="animate-spin text-muted-foreground" />}
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 max-h-60 xl:max-h-none overflow-y-auto pr-1">
           {projects.map((project) => (
             <button
               key={project.id}
@@ -251,7 +251,7 @@ const AdminProjectDetails = () => {
         </div>
       </aside>
 
-      <section className="rounded-xl border border-border bg-card p-5 md:p-6">
+      <section className="rounded-xl border border-border bg-card p-5 md:p-6 min-w-0">
         {!selected ? (
           <div className="text-sm text-muted-foreground">No projects yet.</div>
         ) : (

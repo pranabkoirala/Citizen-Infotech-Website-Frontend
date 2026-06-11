@@ -34,22 +34,26 @@ const CONTACT_FIELDS: { key: keyof SiteSettings; label: string; placeholder: str
 const createTestimonial = (): Testimonial => ({ name: "", role: "", text: "" });
 const createTrustedCompany = (): TrustedCompany => ({ name: "", logo_url: "" });
 
-const cleanTestimonials = (items: SiteSettings["testimonials"] = []) =>
-  items
+const cleanTestimonials = (items: SiteSettings["testimonials"]) => {
+  const arr = Array.isArray(items) ? items : [];
+  return arr
     .map((item) => ({
-      name: item.name.trim(),
-      role: item.role.trim(),
-      text: item.text.trim(),
+      name: String(item?.name ?? "").trim(),
+      role: String(item?.role ?? "").trim(),
+      text: String(item?.text ?? "").trim(),
     }))
     .filter((item) => item.name || item.text);
+};
 
-const cleanTrustedCompanies = (items: SiteSettings["trusted_companies"] = []) =>
-  items
+const cleanTrustedCompanies = (items: SiteSettings["trusted_companies"]) => {
+  const arr = Array.isArray(items) ? items : [];
+  return arr
     .map((item) => ({
-      name: item.name.trim(),
-      logo_url: item.logo_url || null,
+      name: String(item?.name ?? "").trim(),
+      logo_url: item?.logo_url || null,
     }))
     .filter((item) => item.name || item.logo_url);
+};
 
 const prepareSettings = (settings: SiteSettings): SiteSettings => ({
   ...settings,

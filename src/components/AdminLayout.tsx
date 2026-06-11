@@ -1,10 +1,28 @@
+import { useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Users, Briefcase, FileText, Mail, Edit, ArrowLeft, LogOut, Settings, Home, Sparkles, Wrench, Images, FilePenLine } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  Briefcase,
+  FileText,
+  Mail,
+  Edit,
+  ArrowLeft,
+  LogOut,
+  Settings,
+  Home,
+  Sparkles,
+  Wrench,
+  Images,
+  FilePenLine,
+  Building2,
+  Menu,
+  X
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { messagesApi } from "@/lib/api";
 import ThemeSwitcher from "./ThemeSwitcher";
-import { Building2 } from "lucide-react";
 
 const navItems = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -26,6 +44,7 @@ const AdminLayout = () => {
   const { pathname } = useLocation();
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { data: messages = [] } = useQuery({ queryKey: ["messages"], queryFn: messagesApi.getAll });
   const unread = messages.filter((m) => !m.read).length;
 
@@ -36,10 +55,34 @@ const AdminLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <aside className="fixed left-0 top-0 z-40 flex h-full w-56 flex-col overflow-y-auto border-r border-border bg-card">
-        <div className="flex h-16 items-center gap-2 border-b border-border px-5">
-          <Link to="/" className="text-muted-foreground hover:text-primary"><ArrowLeft size={16} /></Link>
-          <span className="font-heading text-sm font-bold text-foreground">Admin Panel</span>
+      {/* Mobile Sidebar Backdrop */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-background/80 backdrop-blur-sm md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed left-0 top-0 z-40 flex h-full w-56 flex-col overflow-y-auto border-r border-border bg-card transition-transform duration-300 md:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex h-16 items-center justify-between border-b border-border px-5">
+          <div className="flex items-center gap-2">
+            <Link to="/" className="text-muted-foreground hover:text-primary">
+              <ArrowLeft size={16} />
+            </Link>
+            <span className="font-heading text-sm font-bold text-foreground">Admin Panel</span>
+          </div>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground md:hidden"
+            aria-label="Close sidebar"
+          >
+            <X size={16} />
+          </button>
         </div>
         <nav className="flex-1 p-3 space-y-1">
           {navItems.map((n) => {
@@ -49,8 +92,10 @@ const AdminLayout = () => {
               <Link
                 key={n.to}
                 to={n.to}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${active ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  }`}
+                onClick={() => setSidebarOpen(false)}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                  active ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                }`}
               >
                 <n.icon size={16} />
                 <span className="flex-1">{n.label}</span>
@@ -70,12 +115,32 @@ const AdminLayout = () => {
           <LogOut size={16} /> Sign out
         </button>
       </aside>
-      <main className="ml-56 flex-1">
-        <div className="flex h-14 items-center justify-end gap-3 border-b border-border bg-card/50 px-8 backdrop-blur">
-          <span className="text-xs text-muted-foreground">Quick theme</span>
-          <ThemeSwitcher allowThemeControls persistChanges />
+
+      {/* Main Content Area */}
+      <main className="min-h-screen flex-1 md:ml-56 flex flex-col">
+        {/* Header Toolbar */}
+        <div className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-border bg-card/50 px-4 md:px-8 backdrop-blur">
+          {/* Mobile menu toggle */}
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-foreground md:hidden hover:bg-secondary"
+            aria-label="Open sidebar"
+          >
+            <Menu size={18} />
+          </button>
+
+          {/* Spacer when on desktop to push theme switch to right */}
+          <div className="hidden md:block" />
+
+          {/* Quick Theme Controls */}
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-muted-foreground hidden sm:inline">Quick theme</span>
+            <ThemeSwitcher allowThemeControls persistChanges />
+          </div>
         </div>
-        <div className="p-8">
+
+        {/* Content Body */}
+        <div className="p-4 md:p-8 flex-1">
           <Outlet />
         </div>
       </main>
