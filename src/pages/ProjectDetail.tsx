@@ -202,17 +202,17 @@ const BrutalistDetail = ({ project }: { project: Project }) => (
 );
 
 const PastelDetail = ({ project }: { project: Project }) => (
-  <article className="overflow-hidden rounded-[2rem] border-2 border-primary/20 bg-card shadow-2xl shadow-primary/10">
-    <div className="flex flex-col gap-5 p-8 md:flex-row md:items-start md:p-10">
+  <article className="overflow-hidden rounded-2xl border-2 border-primary/20 bg-card shadow-2xl shadow-primary/10">
+    <div className="flex flex-col gap-4 p-6 md:flex-row md:items-start md:p-10">
       <div
-        className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2"
+        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border-2"
         style={{ backgroundColor: "var(--project-accent-bg)", borderColor: "var(--project-accent)", color: "var(--project-accent)" }}
       >
-        <HeartPulse size={30} />
+        <HeartPulse size={26} />
       </div>
       <div>
-        <h1 className="max-w-3xl font-heading text-3xl font-bold leading-tight text-foreground md:text-5xl">{project.title}</h1>
-        <div className="mt-4 flex flex-wrap gap-2">
+        <h1 className="max-w-3xl font-heading text-2xl font-bold leading-tight text-foreground md:text-5xl">{project.title}</h1>
+        <div className="mt-3 flex flex-wrap gap-2">
           {[project.category, project.year, project.status || "Live"].map((chip) => (
             <span key={chip} className="rounded-full px-3 py-1 text-xs font-semibold" style={{ backgroundColor: "var(--project-accent-bg)", color: "var(--project-accent-text)" }}>
               {chip}
@@ -222,11 +222,11 @@ const PastelDetail = ({ project }: { project: Project }) => (
       </div>
     </div>
 
-    <div className="px-8 md:px-10">
-      {projectImage(project, "flex aspect-[16/7] items-center justify-center overflow-hidden rounded-2xl border border-border/60 bg-secondary")}
+    <div className="px-4 md:px-10">
+      {projectImage(project, "flex w-full aspect-video md:aspect-[16/7] items-center justify-center overflow-hidden rounded-2xl border border-border/60 bg-secondary")}
     </div>
 
-    <div className="grid gap-4 p-8 md:grid-cols-2 md:p-10">
+    <div className="grid gap-4 p-6 md:grid-cols-2 md:p-10">
       {[
         ["Client", project.client || "Citizen Infotech"],
         ["Stack", project.tech_stack || project.category],
@@ -242,13 +242,13 @@ const PastelDetail = ({ project }: { project: Project }) => (
       ))}
     </div>
 
-    <div className="px-8 pb-8 md:px-10 md:pb-10">
+    <div className="px-4 pb-6 md:px-10 md:pb-10">
       <RichContent project={project} />
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <BackLink />
         <ProjectAction
           project={project}
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-bold text-primary-foreground"
         />
       </div>
     </div>
