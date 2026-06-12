@@ -82,7 +82,7 @@ class UploadAdapter {
         const url= import.meta.env.VITE_API_URL|| "http://localhost:8080"
 
         const response = await fetch(
-          `${url}/api/projects/upload-image`,
+          `${url}/projects/upload-image`,
           {
             method: "POST",
             body: formData,
