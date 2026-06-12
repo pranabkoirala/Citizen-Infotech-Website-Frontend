@@ -80,6 +80,7 @@ class UploadAdapter {
 
         const token = localStorage.getItem("auth_token");
         const url= import.meta.env.VITE_API_URL|| "http://localhost:8080"
+        console.log(url)
 
         const response = await fetch(
           `${url}/projects/upload-image`,
