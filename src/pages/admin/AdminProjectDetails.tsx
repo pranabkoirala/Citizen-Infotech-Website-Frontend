@@ -79,9 +79,10 @@ class UploadAdapter {
         formData.append("file", file);
 
         const token = localStorage.getItem("auth_token");
+        const url= import.meta.env.VITE_API_URL|| "http://localhost:8080"
 
         const response = await fetch(
-          "http://localhost:8080/api/projects/upload-image",
+          `${url}/projects/upload-image`,
           {
             method: "POST",
             body: formData,
